@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatApp — Architecture Diagrams</title>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  </script>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #1e1e1e; color: #ddd; margin: 0; padding: 24px; max-width: 900px; margin-inline: auto; }
+    h1 { color: #fff; }
+    h2 { color: #7dd3fc; margin-top: 2rem; border-bottom: 1px solid #444; padding-bottom: 0.5rem; }
+    p.hint { color: #aaa; font-size: 0.95rem; }
+    .mermaid { background: #2d2d2d; border-radius: 8px; padding: 16px; margin: 16px 0; }
+    a { color: #7dd3fc; }
+  </style>
+</head>
+<body>
+  <h1>ChatApp Architecture — Live Preview</h1>
+  <p class="hint">MD preview mein diagram na dikhe to <strong>is file ko browser mein kholo</strong> (right-click → Open with → Chrome). Ya extension: <em>Markdown Preview Mermaid Support</em>.</p>
+
+  <h2>1. Simple system (dummy)</h2>
+  <pre class="mermaid">
+flowchart TB
+    U([User])
+    subgraph live [LIVE today]
+        B[Browser]
+        R["React App client/"]
+        D["assets.js dummy data"]
+        B --> R
+        R --> D
+    end
+    subgraph planned [PLANNED later]
+        API[REST API]
+        WS[Socket.io]
+        DB[(MongoDB)]
+    end
+    U --> B
+    R -.->|HTTP| API
+    R -.->|realtime| WS
+    API --> DB
+    WS --> DB
+  </pre>
+
+  <h2>2. Send message (sequence)</h2>
+  <pre class="mermaid">
+sequenceDiagram
+    participant You as User
+    participant UI as Chat UI
+    participant Server as Server
+    participant Friend as Friend
+    You->>UI: type and send Hi
+    UI->>Server: save message
+    Server->>Friend: deliver
+    Friend-->>You: reply shows
+  </pre>
+
+  <h2>3. Offline fallback</h2>
+  <pre class="mermaid">
+flowchart LR
+    A[Send message] --> B{Internet OK?}
+    B -->|Yes| C[Server OK]
+    B -->|No| D[Offline banner]
+    D --> E[Queue locally]
+    E --> F[Retry when online]
+    F --> C
+  </pre>
+
+  <p><a href="./DEMO-what-diagrams-look-like.md">Back to DEMO markdown</a> · <a href="./system-design.md">system-design.md</a></p>
+</body>
+</html>
