@@ -6,6 +6,34 @@
      font-family: "Outfit", sans-serif;
 }
 
+html, body, #root {
+  min-height: 100%;
+}
+
+body {
+  background: radial-gradient(circle at top left, rgba(111, 90, 255, 0.18), transparent 28%),
+              radial-gradient(circle at bottom right, rgba(67, 56, 173, 0.24), transparent 25%),
+              #05050c;
+  color: #fff;
+}
+
+::selection {
+  background: rgba(111, 90, 255, 0.28);
+}
+
+.glass-panel {
+  background: rgba(12, 12, 25, 0.82);
+  box-shadow: 0 40px 100px rgba(4, 5, 15, 0.55);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.group:hover .group-hover-dropdown,
+.group:hover .group-hover-dropdown-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 ::-webkit-scrollbar{
     display: none;
 }
