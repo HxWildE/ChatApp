@@ -100,6 +100,35 @@ Abhi **sirf placeholder** — headings jaisa. Router connect hone ke baad alag U
 
 ---
 
+**[Medium] ChatContainer component ko click karne par kyu render nahi ho raha tha?**
+
+**Answer (Hinglish):** Arre, props receive nahi kar rahe the! Component definition `const chatContainer = () => { ... }` likha tha — **no props destructuring**. Phir andar `setselectedUser` (typo) check kar rahe the, jo ki **undefined** tha. HomePage se pass hote the `selectedUser` aur `setSelectedUser`, par component unhe use hi nahi kar raha tha.  
+
+**Fix:**
+1. Props accept karo: `const ChatContainer = ({ selectedUser, setSelectedUser }) => { ... }`
+2. Typo fix: `setselectedUser` → `selectedUser` (aur `setselectedUser(null)` → `setSelectedUser(null)`)
+3. Export fix: `export default chatContainer` → `export default ChatContainer` (capital C)
+
+**Seekho:** React components ko props pass karane se pehle check karo ki component unhe accept kar raha hai. Console.log props — debugging ka best practice!
+
+---
+
+**[Hard] HomePage mein layout kyu galat dikh raha tha — RightSidebar ke liye jaada space ho raha tha?**
+
+**Answer (Hinglish):** Grid layout mein **`gap-64`** likha tha — matlab **columns ke beech 16rem (256px) space!** Aur jo user selected tha, tab bhi `grid-cols-[300px_1fr_300px]` set tha — 3 columns. Fix:
+
+1. Gap ko `gap-0` karo.
+2. Logic ko reverse karo — jab **user select ho**, tab sirf **sidebar + ChatContainer** (2 columns). Jab **not selected**, tab **sidebar + ChatContainer + RightSidebar** (3 columns).
+3. RightSidebar ko conditionally render karo: `{!selectedUser && <RightSidebar ... />}`
+
+**Seekho:** Tailwind Grid + gap spacing ko samjho — small changes, big visual impact!
+
+---
+
+*Last synced: 2026-06-17*
+
+---
+
 **[Easy] Why Vite instead of Create React App (CRA)?**
 
 **Answer (Hinglish):** Vite dev mode mein **native ESM** use karta hai — matlab changes par **bahut fast HMR** (page jaldi refresh). CRA webpack par depend karta tha, slow hota tha. Hum `client/package.json` mein **Vite 8** use kar rahe hain.  

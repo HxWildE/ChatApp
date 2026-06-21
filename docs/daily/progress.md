@@ -4,6 +4,63 @@
 
 ---
 
+## 2026-06-17
+
+### Summary
+
+Fixed critical bug in `ChatContainer` component where props were not being received. Component was checking undefined variable `setselectedUser` instead of using passed props `selectedUser` and `setSelectedUser`. Fixed sidebar-to-chat-container width gap (was `gap-64`, now `gap-0`). Hidden RightSidebar on user selection.
+
+### Changes
+
+- **Modified:** `client/src/components/chatContainer.jsx`
+  - Line 4: Accept props destructuring `{ selectedUser, setSelectedUser }`
+  - Line 5: Use `selectedUser` instead of `setselectedUser` in conditional
+  - Line 15: Fix onClick to call `setSelectedUser(null)` (was `selectedUser(null)`)
+  - Line 32: Export `ChatContainer` instead of `chatContainer`
+- **Modified:** `client/src/pages/HomePage.jsx`
+  - Line 13: Change `gap-64` → `gap-0` to remove huge gap between sidebar and chat
+  - Line 13: Swap grid layout logic so RightSidebar hidden on selection
+  - Line 18: Conditional render RightSidebar only when no user selected
+
+### Not committed yet
+
+Changes in `ChatContainer.jsx` and `HomePage.jsx` — staged and ready to commit.
+
+### Stack & tools in use
+
+| Tool | Version | Used for |
+|------|---------|----------|
+| React | 19.2.6 | UI components & state |
+| Vite | 8.0.12 | Dev server & build |
+| Tailwind CSS | 4.3.0 | Responsive grid layout |
+| react-router-dom | 7.15.1 | (not yet active) |
+| Git | — | Version control |
+
+### Features / pages status
+
+| Area | Status | Notes |
+|------|--------|-------|
+| ChatContainer | Fixed | Props now work; shows selected user |
+| Sidebar | Working | Click user → state updates |
+| HomePage layout | Fixed | Gap removed; RightSidebar conditionally rendered |
+| Message list | Not started | Next: display actual messages |
+| Real-time | Not started | WebSocket planned |
+
+### Blockers / next steps
+
+- Test chat selection flow in browser
+- Display actual messages in ChatContainer (instead of hard-coded Martin Johnson)
+- Add message input form
+- Implement message send/receive flow
+
+### Git
+
+- Last commit: `d7aed95` — "chat Screens"
+- Current branch: `main`
+- Uncommitted: `ChatContainer.jsx`, `HomePage.jsx` (both modified)
+
+---
+
 ## 2026-05-15
 
 ### Summary

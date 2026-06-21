@@ -3,11 +3,17 @@
 > Visual architecture: API, DB, WebSocket, fallbacks, storage.  
 > **Update:** `Use architecture-visualizer — update architecture`
 
-*Last synced: 2026-05-15*
+*Last synced: 2026-06-17*
 
 ---
 
 ## Changelog
+
+### 2026-06-17
+- Fixed ChatContainer props bug — now receives and uses `selectedUser` and `setSelectedUser` correctly.
+- Fixed HomePage layout — gap between sidebar/chat reduced from `gap-64` to `gap-0`.
+- Sidebar click-to-select flow now LIVE — user selection triggers ChatContainer render.
+- RightSidebar conditionally hidden when user selected.
 
 ### 2026-05-15
 - Initial diagrams: current frontend-only vs target full-stack design.

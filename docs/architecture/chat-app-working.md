@@ -3,11 +3,17 @@
 > End-to-end chat app flow for **understanding + interviews**.  
 > **Update:** `Use architecture-visualizer — update chat flow`
 
-*Last synced: 2026-05-15*
+*Last synced: 2026-06-17*
 
 ---
 
 ## Changelog
+
+### 2026-06-17
+- **ChatContainer** upgraded from PARTIAL → LIVE: now correctly receives props, renders on user selection.
+- **Sidebar + HomePage layout** upgraded: user click flows correctly, layout gap fixed.
+- **RightSidebar** now conditionally rendered (hidden when user selected).
+- Component state management via React hooks working (`useState` for `selectedUser`).
 
 ### 2026-05-15
 - Initial user journey, component tree, message lifecycle (live vs planned).
@@ -51,7 +57,7 @@ flowchart TD
 
 ---
 
-## 2. Screens map (files)
+## 2. Screens map (files) + Components
 
 <!-- STATUS: partial -->
 
@@ -59,25 +65,36 @@ flowchart TD
 flowchart LR
     subgraph pages [client/src/pages]
         LP["[PARTIAL] LoginPage.jsx"]
-        HP["[PARTIAL] HomePage.jsx"]
+        HP["[LIVE] HomePage.jsx\n(select user working)"]
         PP["[PARTIAL] ProfilePage.jsx"]
-        CW["[PLANNED] ChatWindow.jsx"]
+    end
+
+    subgraph comp [client/src/components]
+        SB["[LIVE] Sidebar.jsx\n(user list)"]
+        CC["[LIVE] ChatContainer.jsx\n(props fixed!)"]
+        RS["[PARTIAL] RightSidebar.jsx\n(conditional)"]
     end
 
     App["[LIVE] App.jsx"] --> LP
     App --> HP
     App --> PP
-    HP --> CW
+    
+    HP --> SB
+    HP --> CC
+    HP --> RS
 
     subgraph data [Data source]
         Dummy["[LIVE] assets.js\nuserDummyData"]
         API["[PLANNED] REST API"]
     end
 
-    HP -.-> Dummy
+    SB -.-> Dummy
+    CC -.-> Dummy
     HP -.-> API
-    CW -.-> API
 ```
+
+**Hinglish:** Ab select user flow work kar raha hai — Sidebar ke click se ChatContainer show ho raha hai!
+
 
 ---
 
