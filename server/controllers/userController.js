@@ -1,10 +1,10 @@
+import { generateToken } from "../lib/utils"
 import User from "../models/User"
 import bcrypt from "bcryptjs"
 
 export const signup = async (req,res) =>{
 
-    const {fullName ,email ,password ,bio} = req.body
-}
+    const {fullName ,email ,password ,bio} = req.body;
 
 //validation -- all fields have been filled
 try{
@@ -31,12 +31,48 @@ try{
         //salt arg = k = 10 ^k calacualtions
         //10^10 cacuations to encrypt
         const hashedPassword = await bcrypt.hash(password, salt);
+        
         ///store this in db
-
         const newUser = User.create({
             fullName ,email , password : hashedPassword, bio
         })
 
+        const token = generateToken(newUser._id);
+        res.json({success : true , userData : newUser ,
+             token , message : "Account Created Successfully "})
 }catch(error){
-
+        console.log(error.message);
+        res.json({success: false ,message : error.message})
+    }
 }
+
+export const login =  async (req,res) =>{
+    try{
+        const {email,password } = req.body;
+        const UserData = await User.findOne({email});
+
+        const isPasswordCorrect = await bcrypt.compare(password,userDate.password);
+       
+        if(!isPasswordCorrect){
+            return res.json({
+                success:false,
+                message : "Invalid Credentials"
+            })
+        }
+
+        const token = generateToken(newUser._id);
+        res.json({
+                success:true,
+                UserData : mewUser ,
+                token ,
+                message : "Login Successful"            
+        })
+    }
+    catch{
+
+        console.log(error.message);
+        res.json({success: false ,message : error.message});
+
+    }
+}
+const 

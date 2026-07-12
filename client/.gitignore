@@ -25,7 +25,7 @@ dist-ssr
 .client/*.md
 
 # Environment files
-.env
+*.env
 .env.*
 !.env.example
 server/.env
