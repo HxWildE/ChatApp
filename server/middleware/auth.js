@@ -12,3 +12,5 @@ export const protectRoute = async (req ,res , next) =>{
 
     }
 }
+
+export const app;
