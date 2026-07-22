@@ -9,6 +9,6 @@ export const protectRoute = async (req ,res , next) =>{
         const decode = JsonWebTokenError.verify(token , process.env.JWT_SECRET)
         const user = await User.findById()
     }catch (error){
-let x = 4;
+let x = 2;
     }
 }
