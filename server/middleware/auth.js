@@ -1,14 +1,26 @@
 
 
-
 export const protectRoute = async (req ,res , next) =>{
 
     try{
         const token = req.headers.token;
 
-        const decode = JsonWebTokenError.verify(token , process.env.JWT_SECRET)
-        const user = await User.findById()
+        const decoded = JsonWebTokenError.verify(token , process.env.JWT_SECRET)
+        
+        const user = await User.findById(decoded.userId).select("-password");
+
+        if(!user) return res.json({
+            success : false ,
+            message : "User not Found !"
+        });
+
+        req.user = user;
+        next();
+
     }catch (error){
-let x = 6;
+        res.json({
+            success: false,
+            message : "User not Found !"
+        })
     }
 }
