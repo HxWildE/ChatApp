@@ -51,7 +51,7 @@ export const login =  async (req,res) =>{
         const {email,password } = req.body;
         const UserData = await User.findOne({email});
 
-        const isPasswordCorrect = await bcrypt.compare(password,userDate.password);
+        const isPasswordCorrect = await bcrypt.compare(password,UserData.password);
        
         if(!isPasswordCorrect){
             return res.json({
@@ -75,4 +75,6 @@ export const login =  async (req,res) =>{
 
     }
 }
-const 
+export const checkAuth = (req,res) =>{
+    
+}
