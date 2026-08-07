@@ -20,7 +20,7 @@ export const protectRoute = async (req ,res , next) =>{
     }catch (error){
         res.json({
             success: false,
-            message : "User not Found !"
+            message : "User not found !"
         })
     }
 }
