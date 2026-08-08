@@ -3,7 +3,6 @@ import User from "../models/User"
 import bcrypt from "bcryptjs"
 
 export const signup = async (req,res) =>{
-
     const {fullName ,email ,password ,bio} = req.body;
 
 //validation -- all fields have been filled
@@ -60,8 +59,8 @@ export const login =  async (req,res) =>{
             })
         }
 
-        const token = generateToken(newUser._id);
-        res.json({
+    const token = generateToken(newUser._id);
+    res.json({
                 success:true,
                 UserData : mewUser ,
                 token ,
@@ -75,6 +74,40 @@ export const login =  async (req,res) =>{
 
     }
 }
+
 export const checkAuth = (req,res) =>{
-    
+        res.json({success:true,
+            user : req.user
+        })    
+}
+
+export const updateProfile = async(req, res) =>{
+    try{
+
+        const {profilePic , bio ,fullName} = req.body;
+
+        const userId = req.user._id;
+        let updatedUser;
+
+        if(!profilePic){
+            updatedUser = await User.findByIdAndUpdate(userId , {bio ,fullName} , {new :true});
+        }else{
+            const upload = await cloudinary.uploader.upload(profilePic);
+            
+            updatedUser = await User.findByIdAndUpdate(userId , {profilePic:upload.secure_url ,bio ,fullName} , 
+            {new :true});
+        }
+
+        res.json({
+            success:true,
+            user : updatedUser
+    })
+    }
+    catch(error){      
+        console.log(error.message)
+        res.json({
+            success:false,
+            message : error.message 
+        })
+    }
 }
