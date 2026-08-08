@@ -11,6 +11,8 @@ app.use(express.json({limit :"4mb"}))
 app.use(cors())
 
 app.use("/api/status",(req,res)=>res.send("Server is live !"))
+app.use("api/auth",userRouter)
+
 
 const start = async () => {
   const p = await connectDB()
