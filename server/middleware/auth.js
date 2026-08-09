@@ -1,25 +1,25 @@
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
-//protected Route
-export const protectRoute = async (req ,res , next) =>{
+export const protectRoute = async (req, res, next) => {
+  try {
+    const token = req.headers.token;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select('-password');
 
-    try{
-        const token = req.headers.token;
-        const decoded = JsonWebTokenError.verify(token , process.env.JWT_SECRET)       
-        const user = await User.findById(decoded.userId).select("-password");
-        //protects the routes by verifying with JWT
-        
-        if(!user) return res.json({
-            success : false ,
-            message : "User not Found !"
-        });
-
-        req.user = user;
-        next();
-
-    }catch (error){
-        res.json({
-            success: false,
-            message : "User not found!"
-        })
+    if (!user) {
+      return res.json({
+        success: false,
+        message: 'User not Found !'
+      });
     }
-}
+
+    req.user = user;
+    next();
+  } catch (error) {
+    res.json({
+      success: false,
+      message: 'User not found!'
+    });
+  }
+};
