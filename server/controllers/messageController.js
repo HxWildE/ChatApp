@@ -33,9 +33,61 @@ res.json({
 
 export const getMessages = async (req,res) =>{
     try{
-             
-} catch(error){
-   console.log(error.message)
-   res.json({success : false , message : error.message})
+          const selectedUserId = req.params;
+          const myId = req.user._id;
+          
+          const messages = await Messages.find({
+               $or:[
+                {senderId : myId ,recieverId : selectedUserId},
+                 {senderId : selectedUserId ,recieverId : myId}
+               ]
+          })
+
+          await Message.updateMany({senderId: selectedUserId , recieverId : myId},
+          { seen : true});
+          //marked messages as seen true  in DB
+
+         res.json({success : false , messages})
+
+        } catch(error){
+            console.log(error.message)
+           res.json({success : false , message : error.message})
+    }
+}
+
+export const getMessages = async (req,res) =>{
+    try{
+          const selectedUserId = req.params;
+          const myId = req.user._id;
+          
+          const messages = await Messages.find({
+               $or:[
+                {senderId : myId ,recieverId : selectedUserId},
+                 {senderId : selectedUserId ,recieverId : myId}
+               ]
+          })
+
+          await Message.updateMany({senderId: selectedUserId , recieverId : myId},
+          { seen : true});
+          //marked messages as seen true  in DB
+
+         res.json({success : false , messages})
+
+        } catch(error){
+            console.log(error.message)
+           res.json({success : false , message : error.message})
+    }
+}
+
+export const markMessagesAsSeen = async (req,res) =>{
+    try{
+            const { id } = req.params;
+          await Message.findByIdAndUpdate(id , {seen :true})
+          res.json({success : true})
+          //marked messages as seen true  in DB
+
+        } catch(error){
+            console.log(error.message)
+           res.json({success : false , message : error.message})
     }
 }
