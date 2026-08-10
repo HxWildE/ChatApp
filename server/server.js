@@ -9,6 +9,7 @@ import { Server } from "socket.io"
 dotenv.config();
 
 const app = express();
+
 const server = http.createServer(app);
 
 app.use(express.json({ limit: '4mb' }));
