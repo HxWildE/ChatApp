@@ -1,53 +1,31 @@
-# ChatApp — Documentation Commands
+# ChatApp Documentation
 
-Run in **Agent chat**. Schedule is yours — no auto calendar.
+This folder holds the working notes, architecture references, and interview prep material for the project.
 
----
+## Current documentation set
 
-## Progress & interview (`daily-progress-reporter`)
+- [docs/ACTIVE.md](ACTIVE.md) — active docs map
+- [docs/daily/progress.md](daily/progress.md) — feature and milestone log
+- [docs/interview/part-01.md](interview/part-01.md) — interview notes and talking points
+- [docs/architecture/system-design.md](architecture/system-design.md) — overall system structure
+- [docs/architecture/chat-app-working.md](architecture/chat-app-working.md) — user journey and app flow
+- [docs/architecture/gifs/README.md](architecture/gifs/README.md) — GIF/demo asset notes
 
-| Command | Action |
-|---------|--------|
-| **`update progress`** | Progress log + interview prep (Hinglish Q&A) |
-| **`new progress doc`** | Rotate `docs/daily/progress-part-NN.md` |
-| **`new interview doc`** | Rotate `docs/interview/part-NN.md` |
+## Recommended update flow
 
-**Example:**  
-> Use daily-progress-reporter — **update progress**
+After a meaningful feature change, update the docs in this order:
 
----
-
-## Architecture & visuals (`architecture-visualizer`)
-
-| Command | Action |
-|---------|--------|
-| **`update architecture`** | Refresh system design + chat flow Mermaid diagrams |
-| **`update chat flow`** | Same (focus on `chat-app-working.md`) |
-| **`new architecture doc`** | Rotate/split when `system-design.md` too long |
-
-**Example:**  
-> Use architecture-visualizer — **update architecture**
-
-### What you get
-
-| File | Content |
-|------|---------|
-| `docs/architecture/system-design.md` | API, DB, WebSocket, fallback, storage diagrams |
-| `docs/architecture/chat-app-working.md` | User journey, message lifecycle, component tree |
-| `docs/architecture/gifs/README.md` | GIF wishlist (you record, agent links) |
-
-**Diagrams dekho:** Install **Markdown Preview Mermaid Support** extension, then `Ctrl+Shift+V` — **OR** open `docs/architecture/preview.html` in browser.
-
-**GIFs:** Agent does not auto-create GIF files — follow wishlist, drop `.gif` in `docs/architecture/gifs/`, then run `update architecture`.
-
----
+1. Progress log in [docs/daily/progress.md](daily/progress.md)
+2. Architecture notes in [docs/architecture/system-design.md](architecture/system-design.md)
+3. User-flow notes in [docs/architecture/chat-app-working.md](architecture/chat-app-working.md)
+4. Interview notes in [docs/interview/part-01.md](interview/part-01.md)
 
 ## Folder layout
 
-```
+```text
 docs/
-  README.md
   ACTIVE.md
+  README.md
   daily/progress.md
   interview/part-01.md
   architecture/
@@ -56,10 +34,8 @@ docs/
     gifs/README.md
 ```
 
----
+## Notes
 
-## Tips
-
-- After big feature: run **both** `update progress` and `update architecture`
-- Commit docs with code
-- Interview answers: **Hinglish** | Architecture explanations under diagrams: **Hinglish**
+- The current implementation already includes a React frontend, an Express backend, and Mongoose-based persistence.
+- The architecture docs should be updated whenever routes, models, or UI flow change.
+- Mermaid diagrams can be previewed in VS Code with Markdown preview support.
