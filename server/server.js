@@ -21,7 +21,7 @@ export const userSocketMap = {}; //{userId :socket}
 io.on("connection" , (socket) =>{
 
   const userId = socket.handshake.query.userId;
-  console.log("Use Connected" , userId);
+  console.log("User Connected" , userId);
 
   if(userId) userSocketMap[users] = socket.id;
 
@@ -30,12 +30,10 @@ io.on("connection" , (socket) =>{
   socket.on("disconnect" , ()=>{
       console.log("User Disconnected ",userId);
       delete userSocketMap[userId];
-
-      io.emit("getOnlineUsers" , Object.keys(user));
-  })
+      io.emit("getOnlineUsers" , Object.keys(userSocketMap));
+  }
+)
 })
-
-
 
 app.use(express.json({ limit: '4mb' }));
 app.use(cors());
