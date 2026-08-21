@@ -2,7 +2,8 @@ import React from 'react'
 import assets, { userDummyData } from "../assets/assets"
 import { useNavigate } from 'react-router-dom'
 
-const Sidebar = ({ selectedUser , setSelectedUser})=>{
+const Sidebar = ({ selectedUser , setSelectedUser})=>{        //destructured props picked up here, selectedUser = variable 
+                                                              //setSEelctedUSer a function
   const navigate = useNavigate();
 
   return (
