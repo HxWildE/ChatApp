@@ -1,6 +1,8 @@
 
 import assets from '../assets/assets';
 import React, { useState } from 'react'
+import { AuthContext } from '../../context/AuthContext.jsx';
+import { useContext } from 'react';
 
 const LoginPage = () => {
 
@@ -10,6 +12,9 @@ const [email,setEmail] = useState("")
 const [password,setPassword] = useState("")
 const [bio, setBio] = useState("")
 const [isDataSubmitted ,setisDataSubmitted] = useState("")
+
+ const login = useContext(AuthContext)
+
 const onSubmitHandler = (event)=>{
   event.preventDefault();
 
@@ -19,7 +24,7 @@ const onSubmitHandler = (event)=>{
   }
 }
 
-  return  !isDataSubmitted?(
+  return  !isDataSubmitted ? (
 
     <div className='min-h-screen bg-cover bg-center flex items-center
     justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl'>
@@ -74,7 +79,7 @@ p-6 flex flex-col gap-6 rounded-lg shadow-lg'>
 
 <button type='submit' className='py-3 bg-linear-to-r from-purple-400
  to-violet-600 text-white rounded-md cursor-pointer'>
-  {currState === "Sign up" ? "CreateAccount" : "Login Now" }
+  {currState === "Sign up" ? "CreateAccount" : "Login Now " }
 </button>
 
 <div className='flex items-center gap-2 text-sm 
