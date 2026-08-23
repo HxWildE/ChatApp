@@ -3,7 +3,10 @@ import assets, { userDummyData } from "../assets/assets"
 import { useNavigate } from 'react-router-dom'
 
 const Sidebar = ({ selectedUser , setSelectedUser})=>{        //destructured props picked up here, selectedUser = variable 
-                                                              //setSEelctedUSer a function
+                                      
+  const {logout} = usecontext(AuthContext)
+  
+  //setSEelctedUSer a function
   const navigate = useNavigate();
 
   return (
@@ -19,7 +22,7 @@ const Sidebar = ({ selectedUser , setSelectedUser})=>{        //destructured pro
             <div className='absolute top-full right-0 z-20 w-40 p-4 mt-3 rounded-2xl glass-panel border border-white/10 opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto'>
               <p onClick={()=>navigate('/profile')} className='cursor-pointer text-sm text-slate-100 hover:text-white'>Edit Profile</p>
               <hr className='my-3 border-t border-slate-600'/>
-              <p className='cursor-pointer text-sm text-slate-100 hover:text-white'>Logout</p>
+              <p onclick = {() => logout()}   className='cursor-pointer text-sm text-slate-100 hover:text-white'>Logout</p>
             </div>
           </div>
   </div>
