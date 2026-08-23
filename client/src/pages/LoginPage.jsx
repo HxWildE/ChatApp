@@ -59,7 +59,7 @@ p-6 flex flex-col gap-6 rounded-lg shadow-lg'>
   focus:ring-indigo-500'/>
 
    <input onChange={(e)=>setPassword(e.target.value)} value={password}
-   type = "email" placeholder='Password'
+   type = "password" placeholder='Password'
   required className='p-2 border border-gray-500 rounded-md
   focus:outline-none focus:ring-2 
   focus:ring-indigo-500'/>
