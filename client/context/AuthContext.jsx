@@ -4,7 +4,8 @@ import axios from 'axios';
 import { io } from 'socket.io-client';
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-axios.defaults.baseUrl = backendUrl;
+const api = axios.create({ baseURL: backendUrl });
+/* eslint-disable react-refresh/only-export-components */
 export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) =>{
@@ -14,16 +15,9 @@ export const AuthProvider = ({children}) =>{
 	const [onlineUsers , setOnlineUsers] = useState([]);
 	const [socket , setSocket] = useState(null);
 
-	useEffect (()=>{
-			if(token){
-				axios.defaults.headers.common["token"] = token;
-			}
-	},[])
-
-
 	const checkAuth = async () =>{
 		 try{
-				await axios.get("/api/auth/check"); 
+				const { data } = await api.get("/api/auth/check"); 
 				if(data.success){
 					setAuthUser(data.user);
 					connectSocket(data.user);
@@ -35,11 +29,10 @@ export const AuthProvider = ({children}) =>{
 
 		const login = async(state ,credentials) => {
 			try {
-				const { data } = await axios.post(`/api/auth/${state}` , credentials);
+				const { data } = await api.post(`/api/auth/${state}` , credentials);
 				if(data.success){
 					setAuthUser(data.userData);
 					connectSocket(data.userData);
-					axios.defaults.headers.common["token"] = data.token;
 					setToken(data.token);
 					localStorage.setItem("token" , data.token);
 					toast.success(data.message);
@@ -56,20 +49,24 @@ export const AuthProvider = ({children}) =>{
 			setToken(null);
 			setAuthUser(null);
 			setOnlineUsers([]);
-			axios.defaults.headers.common["token"] = null;
+			delete api.defaults.headers.common["token"];
 			toast.success("Logged out Successfully");
-			socket.disconnect();
+			socket?.disconnect();
 		}
 
-		const updateProfile = async (body) =>{
-			const { data } = await axios.put("/api/auth/update-profile",body);
-				if(data.success){
+		const updateProfile = async (body) => {
+			try {
+				const { data } = await api.put("/api/auth/update-profile", body);
+				if (data.success) {
 					setAuthUser(data.user);
-					toast.success(data.message);
-				} else{
+					toast.success(data.message || "Profile updated successfully");
+				} else {
 					toast.error(data.message);
 				}
+			} catch (error) {
+				toast.error(error.response?.data?.message || error.message);
 			}
+		}
 
 		const connectSocket = (userData) => {
 				if(!userData || socket?.connected) return;
@@ -88,9 +85,19 @@ export const AuthProvider = ({children}) =>{
 		})
 	}
 
+	useEffect (()=>{
+			if(token){
+				api.defaults.headers.common["token"] = token;
+				// Auth check updates context state after the external request completes.
+				// eslint-disable-next-line react-hooks/set-state-in-effect
+				checkAuth();
+			}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	},[token])
+
 	
 	const value = {
-				axios, 
+				axios: api, 
 				authUser,
 				onlineUsers,
 				socket,

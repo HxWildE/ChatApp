@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import { useContext } from 'react'
 import Sidebar from '../components/Sidebar'
 import ChatContainer from '../components/ChatContainer'
 import RightSidebar from '../components/RightSidebar'
+import { ChatContext } from '../../context/chatContent'
 
 const HomePage = () => {
 
-  const [selectedUser , setSelectedUser] = useState(false)
+  const { selectedUser } = useContext(ChatContext)
   
   return (
     <div className='bg-[url("./src/assets/bgImage.svg")] w-full min-h-screen flex items-center justify-center py-8'>
@@ -16,7 +17,7 @@ const HomePage = () => {
       
         <Sidebar  />
         <ChatContainer/>
-        <RightSidebar selectedUser={selectedUser} setSelectedUser={setSelectedUser}/>
+        <RightSidebar />
     
       </div>
     </div>

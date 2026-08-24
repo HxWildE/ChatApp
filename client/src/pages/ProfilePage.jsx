@@ -1,9 +1,11 @@
-import React,{useState , useNavigate} from 'react'
+import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import assets from '../assets/assets';
+import { AuthContext } from '../../context/AuthContext.jsx';
 
 const ProfilePage = () => {
 
-       const {authUser , updateProfile } = useState(AuthContext);
+      const {authUser , updateProfile } = useContext(AuthContext);
  
 const [selectedImg , setSelectedImg] = useState(null)
 const navigate = useNavigate();
@@ -14,7 +16,7 @@ const handleSubmit = async(e)=>{
   e.preventDefault();
 
   if(!selectedImg){
-    await updateProfile({fullname : name, bio});
+    await updateProfile({fullName: name, bio});
     navigate('/');
     return;
   }
@@ -36,30 +38,29 @@ const handleSubmit = async(e)=>{
        rounded-lg'>
 
         <form onSubmit={handleSubmit} className='flex flex-col gap-5 p-10 flex-1'>
-          <h3 className='text-lg '>Profile details </h3>
-          <label htmlFor='avatar ' className='flex items-center gap-3 cursor-poiter'>
+          <h3 className='text-lg font-medium'>Profile details</h3>
+          <label htmlFor='avatar' className='flex items-center gap-3 cursor-pointer hover:opacity-80 transition'>
             <input onChange={(e)=>setSelectedImg(e.target.files[0])} 
             type='file' id='avatar' accept='.png , .jpg , .jpeg' hidden/>
-                <img src={selectedImg ? URL.createObjectURL(selectedImg): assets.avatar_icon}
-                 alt='' className={` w-12 h-12  ${selectedImg && 'rounded-full'}`}/>
-        uploa profile image
+            <img src={selectedImg ? URL.createObjectURL(selectedImg): (authUser?.profilePic || assets.avatar_icon)}
+                 alt='' className='w-12 h-12 rounded-full object-cover'/>
+            <span className='text-sm text-gray-300'>Upload profile image</span>
           </label>
           <input onChange={(e) =>setName(e.target.value)} value={name}
           type='text' required placeholder='Your Name' className='p-2 border
            border-gray-500 rounded-md
   focus:outline-none focus:ring-2 focus:ring-violet-500'/>
 
-  <textarea  onChange={(e) =>setBio(e.target.value)} value={bio}
-  className='p-2 border  border-gray-500 rounded-md
+  <textarea onChange={(e) =>setBio(e.target.value)} value={bio}
+  className='p-2 border border-gray-500 rounded-md
   focus:outline-none focus:ring-2 focus:ring-violet-500'
   placeholder='Write profile bio' required rows={4}></textarea>
 
-  <button type='submit' className='py-3 bg-linear-to-r from-purple-400
- to-violet-600 text-white rounded-full cursor-pointer'>Save</button>
+  <button type='submit' className='py-3 bg-gradient-to-r from-purple-400
+ to-violet-600 text-white rounded-full cursor-pointer hover:opacity-90 transition font-medium'>Save</button>
 
     </form>
-    <img className='max-w-44 aspect-square rounded-full mx-10
-     max-sm:mt-10  ${selectedImg && rounded-full}' src={authUser?.profilePic || assets.logo_icon} alt=''></img>
+    <img className='max-w-44 w-44 h-44 aspect-square rounded-full mx-10 max-sm:mt-10 object-cover border-2 border-violet-500/30' src={selectedImg ? URL.createObjectURL(selectedImg) : (authUser?.profilePic || assets.logo_icon)} alt=''></img>
        </div>
 
     </div>

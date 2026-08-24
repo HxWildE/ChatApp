@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext';
 import toast from 'react-hot-toast';
 
+/* eslint-disable react-refresh/only-export-components */
 export const ChatContext = createContext();
 
 export const ChatProvider = ({ children}) =>{
@@ -41,7 +42,7 @@ export const ChatProvider = ({ children}) =>{
 
 const sendMessage = async (messageData) =>{
         try{
-            const {data} = await axios.get(`/api/messages/${selectedUser._id}`);
+            const {data} = await axios.post(`/api/messages/send/${selectedUser._id}`, messageData);
               if(data.success){
                 setMessages((prevMessages) => [...prevMessages , data.newMessage])
             }else{
@@ -58,12 +59,12 @@ const subscribetoMessages = async () =>{
     socket.on("newMessage" ,(newMessage) =>{
         if(selectedUser && newMessage.senderId === selectedUser._id){
             newMessage.seen = true;
-            setMessages(()=>[...prevMessages ,newMessage])
-            axios.put(`api/messages/mark/${newMessage._id}`);        
+            setMessages((prevMessages) => [...prevMessages, newMessage])
+            axios.get(`/api/messages/mark/${newMessage._id}`);        
         }else{
-            setUnseenMessages((prevUnseenMessages) =>({
-                ...prevMessages[newMessage.senderId] ? prevUnseenMessages
-                [newMessage.senderId] + 1 : 1
+            setunseenMessages((prevUnseenMessages) =>({
+                ...prevUnseenMessages,
+                [newMessage.senderId]: (prevUnseenMessages[newMessage.senderId] || 0) + 1
             }))
         }
     })
@@ -80,8 +81,8 @@ const subscribetoMessages = async () =>{
     }, [socket , selectedUser])
 
     const value = {
-        messages ,users , selectedUser , getUsers , setMessages , sendMessage
-        , setSelectedUser , unseenMessages , setUnseenMessages
+        messages ,users , selectedUser , getUsers , getMessages , 
+        sendMessage , setSelectedUser , unseenMessages , setUnseenMessages: setunseenMessages
     }
 
     return (
