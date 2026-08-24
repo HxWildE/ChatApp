@@ -1,13 +1,24 @@
-import React from 'react'
-import assets, { userDummyData } from "../assets/assets"
+import React, { useContext, useEffect, useState } from 'react'
+import assets from "../assets/assets"
 import { useNavigate } from 'react-router-dom'
+import { ChatContext } from '../../context/chatContent'
+import { AuthContext } from '../../context/AuthContext'
 
-const Sidebar = ({ selectedUser , setSelectedUser})=>{        //destructured props picked up here, selectedUser = variable 
-                                      
-  const {logout} = usecontext(AuthContext)
-  
+const Sidebar = ()=>{        //destructured props picked up here, selectedUser = variable 
+                 
+  const {getUsers , users , selectedUser ,setSelectedUser 
+    , unseenMessages , setUnseenMessages } = useContext(ChatContext)
+
+  const {logout , onlineUsers } = useContext(AuthContext)
+  const [input , setInput] = useState(false)
   //setSEelctedUSer a function
   const navigate = useNavigate();
+
+  const filteredUsers = input ? users.filter((user) => user.fullName.toLowerCase().includes(input.toLowerCase())) :users;
+   
+  useEffect(() =>{
+    getUsers();
+  },[onlineUsers])
 
   return (
     <div className={`glass-panel h-full p-6 rounded-r-3xl
@@ -29,14 +40,14 @@ const Sidebar = ({ selectedUser , setSelectedUser})=>{        //destructured pro
 
   <div className='bg-[#584f9a] rounded-full flex items-center gap-2 px-2 py-2 w-64'>
     <img src={assets.search_icon} alt='Search' className='w-3'/>
-    <input type='text' className='bg-transparent border-none outline-none
+    <input onChange={(e) => setInput(e.target.value)} type='text' className='bg-transparent border-none outline-none
      text-white text-xs placeholder-[#c8c8c8] flex-1'
      placeholder='Search User'/>
   </div>
 </div>  
 
 <div className ='flex flex-col'>
-  {userDummyData.map((user, index) => (
+  {filteredUsers.map((user, index) => (
     <div key={index} 
     onClick={()=>setSelectedUser(user)}
     className={`relative flex items center gap-2 
@@ -47,12 +58,12 @@ const Sidebar = ({ selectedUser , setSelectedUser})=>{        //destructured pro
       className=' w-10 mr-4 aspect-square rounded-full m-1'/>
       <div className='flex flex-col leading-5'>
         <p>{user?.fullName}</p>{
-          index < 3 
+          onlineUsers.includes(user._id)
           ? <span className='text-green-400 text-xs'> Online</span>
           : <span className='text-neutral-400 text-xs'>Offline</span>
         }
       </div>
-       {index > 2 && <p className='absolute top-4 right-4 text-xs
+       {unseenMessages[user._id] > 0 && <p className='absolute top-4 right-4 text-xs
       h-5 w-5 flex justify-center items-center
        rounded-full bg-violet-500/50'>{index}</p>}
        

@@ -14,8 +14,8 @@ const HomePage = () => {
       overflow-hidden w-[95%] max-w-350 h-[88vh] grid grid-cols-1 gap-0 relative 
       ${selectedUser ? 'grid-cols-[300px_1fr_300px]' : 'grid-cols-[300px_1fr]'}`}>
       
-        <Sidebar selectedUser={selectedUser} setSelectedUser={setSelectedUser}/>
-        <ChatContainer selectedUser={selectedUser} setSelectedUser={setSelectedUser}/>
+        <Sidebar  />
+        <ChatContainer/>
         <RightSidebar selectedUser={selectedUser} setSelectedUser={setSelectedUser}/>
     
       </div>

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext';
 import toast from 'react-hot-toast';
 
@@ -14,7 +14,7 @@ export const ChatProvider = ({ children}) =>{
    
     const { socket ,axios } = useContext(AuthContext);
 
-    const getUSers = async () =>{
+    const getUsers = async () =>{
         try{
             const {data} = await axios.get("/api/messages/users");
             if(data.success){
@@ -27,7 +27,7 @@ export const ChatProvider = ({ children}) =>{
     }
 
         //fucntion to getMessages fr selected users
-    const geMessages = async (userId) =>{
+    const getMessages = async (userId) =>{
         try{
             const {data} = await axios.get(`/api/messages/${userId}`);
               if(data.success){
@@ -52,19 +52,37 @@ const sendMessage = async (messageData) =>{
         }
     }
     
-    
 const subscribetoMessages = async () =>{
     if(!socket) return;
 
     socket.on("newMessage" ,(newMessage) =>{
         if(selectedUser && newMessage.senderId === selectedUser._id){
             newMessage.seen = true;
-            setMessages(()=>[...newMessage])
+            setMessages(()=>[...prevMessages ,newMessage])
+            axios.put(`api/messages/mark/${newMessage._id}`);        
+        }else{
+            setUnseenMessages((prevUnseenMessages) =>({
+                ...prevMessages[newMessage.senderId] ? prevUnseenMessages
+                [newMessage.senderId] + 1 : 1
+            }))
         }
     })
 }
 
-    const value = {}
+//function to unsubscribe from 
+    const unsubscribeFromMessages = () =>{
+        if(socket) socket.off("newMessage");
+    }
+
+    useEffect(() => {
+        subscribetoMessages();
+        return () => unsubscribeFromMessages();        
+    }, [socket , selectedUser])
+
+    const value = {
+        messages ,users , selectedUser , getUsers , setMessages , sendMessage
+        , setSelectedUser , unseenMessages , setUnseenMessages
+    }
 
     return (
         <ChatContext.Provider value={value}>
