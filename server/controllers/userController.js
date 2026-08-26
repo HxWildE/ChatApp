@@ -2,17 +2,31 @@ import { generateToken } from '../lib/utils.js';
 import cloudinary from '../lib/cloudinary.js';
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
+import { z } from 'zod';
+
+const signupSchema = z.object({
+  fullName: z.string().min(1, 'Full name is required'),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  bio: z.string().min(1, 'Bio is required')
+});
+
+const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(1, 'Password is required')
+});
 
 export const signup = async (req, res) => {
-  const { fullName, email, password, bio } = req.body;
-
   try {
-    if (!fullName || !email || !password || !bio) {
+    const validatedData = signupSchema.safeParse(req.body);
+    if (!validatedData.success) {
       return res.json({
         success: false,
-        message: 'Missing Details'
+        message: validatedData.error.errors[0].message
       });
     }
+
+    const { fullName, email, password, bio } = validatedData.data;
 
     const user = await User.findOne({ email });
 
@@ -48,7 +62,15 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const validatedData = loginSchema.safeParse(req.body);
+    if (!validatedData.success) {
+      return res.json({
+        success: false,
+        message: validatedData.error.errors[0].message
+      });
+    }
+    const { email, password } = validatedData.data;
+    
     const userData = await User.findOne({ email });
 
     if (!userData) {
