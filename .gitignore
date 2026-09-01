@@ -1,5 +1,9 @@
 server/.env
 .env
+.cursor
+.cursorrules
 
 *.txt
-PROJECTREAD
+PROJECTREAD/
+
+extraQuestions/
