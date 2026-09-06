@@ -69,6 +69,7 @@ export const login = async (req, res) => {
         message: validatedData.error.errors[0].message
       });
     }
+
     const { email, password } = validatedData.data;
     
     const userData = await User.findOne({ email });
