@@ -11,21 +11,17 @@ html, body, #root {
 }
 
 body {
-  background: radial-gradient(circle at top left, rgba(111, 90, 255, 0.18), transparent 28%),
-              radial-gradient(circle at bottom right, rgba(67, 56, 173, 0.24), transparent 25%),
-              #05050c;
-  color: #fff;
+  background: #000000;
+  color: #e4e4e7;
 }
 
 ::selection {
-  background: rgba(111, 90, 255, 0.28);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .glass-panel {
-  background: rgba(12, 12, 25, 0.82);
-  box-shadow: 0 40px 100px rgba(4, 5, 15, 0.55);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: #09090b;
+  border: 1px solid #27272a;
 }
 
 .group:hover .group-hover-dropdown,
