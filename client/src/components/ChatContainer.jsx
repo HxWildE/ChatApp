@@ -106,10 +106,10 @@ const ChatContainer = () => {
       <div className = 'flex items-center gap-3 py-4 mx-4 border-b border-stone-500'>
       
         <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className="w-8 h-8 rounded-full object-cover"/>
-        <p className='flex-1 text-lg text-white flex items-center gap-2'>
+        <p className='flex-1 text-lg text-[#e4e4e7] flex items-center gap-2'>
          {selectedUser.fullName}
          {isTyping ? (
-           <span className="text-xs text-violet-400 font-medium animate-pulse">typing...</span>
+           <span className="text-xs text-zinc-400 font-medium animate-pulse">typing...</span>
          ) : (
            onlineUsers.includes(String(selectedUser._id)) && <span className = "w-2.5 h-2.5 rounded-full bg-green-500 shadow-sm" title="Online"></span>
          )}
@@ -127,15 +127,17 @@ const ChatContainer = () => {
       <div className='flex-1 overflow-y-scroll p-3 pb-24'>
         
         { messages.map((msg,index)=>(
-          <div key={index} className={`flex items-end gap-2 justify-end 
+          <div key={index} className={`flex items-end gap-2 justify-end mb-6
           ${msg.senderId !== authUser._id && 'flex-row-reverse'}`}>
 
             { msg.image ? (
      <img src={msg.image} alt="" 
-          className="max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8"/>
+          className="max-w-[230px] border border-gray-700 rounded-lg overflow-hidden"/>
             ) : (
-      <p className={`p-2 max-w-[200px] md:text-sm font-light
-          rounded-lg mb-8 break-all bg-violet-500/30 text-white`}>
+      <p className={`py-2 px-3 max-w-[200px] md:text-sm font-light break-all shadow-sm
+          ${msg.senderId === authUser._id 
+            ? 'bg-emerald-600 text-white border border-emerald-500 rounded-xl rounded-br-sm' 
+            : 'bg-orange-500 border border-orange-400 text-white rounded-xl rounded-bl-sm'}`}>
                {msg.text} </p>
             )}
 
@@ -150,7 +152,7 @@ const ChatContainer = () => {
       {isTyping && (
         <div className='flex items-center gap-2 justify-start mb-4 pl-1'>
           <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-6 h-6 rounded-full object-cover'/>
-          <div className='bg-violet-900/40 text-violet-200 px-3 py-1.5 rounded-full text-xs flex items-center gap-1 border border-violet-500/30'>
+          <div className='bg-[#18181b] text-zinc-400 px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 border border-[#27272a]'>
             <span>typing</span>
             <span className='animate-pulse'>...</span>
           </div>
@@ -161,8 +163,8 @@ const ChatContainer = () => {
     </div>
 
 {/* bottomarea */}
-    <div className='flex items-center gap-3 p-3 border-t border-stone-500 bg-black/10'>
-      <div className='flex-1 flex items-center bg-gray-100/12 px-3 rounded-full'>  
+    <div className='flex items-center gap-3 p-3 border-t border-[#27272a] bg-[#09090b]'>
+      <div className='flex-1 flex items-center bg-[#18181b] px-3 rounded-lg border border-[#27272a]'>  
         
         <input onChange={handleInputChange} value={input}
         onKeyDown={(e) => e.key === "Enter" ? handleSendMessage(e) : null}
@@ -180,7 +182,7 @@ const ChatContainer = () => {
 
   ) : (
    <div className='flex flex-col items-center  justify-center
-   h-full gap-2 text-gray-500  bg-white/10 max-md:hidden'>
+   h-full gap-2 text-gray-500  bg-[#000000] max-md:hidden'>
         <input onChange={handleSendImage} type="file" id='image' accept='image/png,image/jpeg' hidden />
   <p className='text-lg font-medium text-white'>
        Chat Anytime , Anywhere </p>

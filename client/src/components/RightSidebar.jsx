@@ -13,7 +13,7 @@ const RightSidebar = () => {
   const msgImages = messages.filter(msg => msg.image).map(msg => msg.image)
 
   return selectedUser ? (
-    <div className={`bg-[#8185B2]/10 text-white w-full relative overflow-y-scroll
+    <div className={`bg-[#09090b] border-l border-[#27272a] text-[#e4e4e7] w-full relative overflow-y-scroll
     ${selectedUser ? "max-md:hidden" : ""}`}>
      
       <div className='pt-16 flex flex-col items-center gap-2 text-xs font-light mx-auto'>
@@ -41,8 +41,7 @@ const RightSidebar = () => {
         </div>
       </div>
       <button onClick={() => logout()} className='absolute bottom-3 left-1/2 
-      transform -translate-x-1/2 bg-linear-to-r from-purple-400 to-violet-600 text-white 
-      border-none text-sm font-light py-2 px-20 rounded-full cursor-pointer'>
+      transform -translate-x-1/2 bg-[#fafafa] hover:bg-[#e4e4e7] transition-colors text-black font-medium py-2 px-20 rounded-lg cursor-pointer'>
             Logout
       </button>
     </div>
