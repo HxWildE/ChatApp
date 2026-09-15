@@ -1,9 +1,21 @@
 server/.env
+client/.env
 .env
 .cursor
 .cursorrules
+
+node_modules/
+server/node_modules/
+client/node_modules/
+dist/
+build/
+*.log
+.git_push_state.json
+auto_pusher.log
+auto_pusher.ps1
 
 *.txt
 PROJECTREAD/
 
 extraQuestions/
+interviewFinAL/

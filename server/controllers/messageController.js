@@ -19,7 +19,6 @@ export const getUsersForSidebar = async (req, res) => {
       if (messages.length > 0) {
         unseenMessages[user._id] = messages.length;
       }
-
     });
 
     await Promise.all(promises);
