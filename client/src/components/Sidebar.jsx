@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import assets from "../assets/assets"
 import { useNavigate } from 'react-router-dom'
-import { ChatContext } from '../../context/chatContent'
+import { ChatContext } from '../../context/chatContext'
 import { AuthContext } from '../../context/AuthContext'
 
 const Sidebar = () => {        //destructured props picked up here, selectedUser = variable 
@@ -10,6 +10,7 @@ const Sidebar = () => {        //destructured props picked up here, selectedUser
     , unseenMessages, setUnseenMessages } = useContext(ChatContext)
 
   const { logout, onlineUsers } = useContext(AuthContext)
+
   const [input, setInput] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   //setSEelctedUSer a function
@@ -20,6 +21,7 @@ const Sidebar = () => {        //destructured props picked up here, selectedUser
   useEffect(() => {
     getUsers();
   }, [onlineUsers])
+//useEffect captures side effecTs (api call is involved)
 
   return (
     <div className={`h-full p-6 text-[#e4e4e7]

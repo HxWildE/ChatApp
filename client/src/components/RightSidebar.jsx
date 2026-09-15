@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import assets from '../assets/assets'
 import { AuthContext } from '../../context/AuthContext'
-import { ChatContext } from '../../context/chatContent'
+import { ChatContext } from '../../context/chatContext'
 
 // selected USer arg in this i have changed myself
 // writing here for future debugging 

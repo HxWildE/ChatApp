@@ -1,7 +1,8 @@
+
 import { useContext, useEffect, useRef, useState } from 'react'
 import assets from '../assets/assets'
 import { formatMessageTime } from '../lib/utils';
-import { ChatContext } from '../../context/chatContent';
+import { ChatContext } from '../../context/chatContext';
 import { AuthContext } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
@@ -41,7 +42,9 @@ const ChatContainer = () => {
   if (e) e.preventDefault();
   if(input.trim() === "") return;
   if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+  //manually clear debouncing
   socket?.emit("stopTyping", { receiverId: selectedUser._id });
+  //send stopTyping here else it will show typing for 1.5 sec even after sendig message
   const textToSend = input.trim();
   setInput("");
   await sendMessage({text : textToSend});
@@ -97,7 +100,7 @@ const ChatContainer = () => {
 
   useEffect(()=>{
   if(scrollEnd.current){
-      scrollEnd.current.scrollIntoView({behavior:'smooth'})
+      scrollEnd.current?.scrollIntoView({behavior:'smooth'})
    } 
 },[messages, isTyping]);
  
