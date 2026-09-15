@@ -3,71 +3,567 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ChatApp — Architecture Diagrams</title>
+  <title>ChatApp — Architecture & Flow Diagrams Visualizer</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Mermaid.js ESM -->
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, sans-serif',
+      themeVariables: {
+        darkMode: true,
+        background: '#18181b',
+        primaryColor: '#3b82f6',
+        primaryTextColor: '#f8fafc',
+        primaryBorderColor: '#60a5fa',
+        lineColor: '#94a3b8',
+        secondaryColor: '#1e293b',
+        tertiaryColor: '#0f172a',
+        mainBkg: '#1e293b',
+        nodeBorder: '#38bdf8',
+        clusterBkg: '#0f172a',
+        clusterBorder: '#334155',
+        actorBkg: '#1e293b',
+        actorBorder: '#60a5fa',
+        actorTextColor: '#f8fafc',
+        actorLineColor: '#64748b',
+        signalColor: '#38bdf8',
+        signalTextColor: '#f8fafc',
+        labelBoxBkgColor: '#1e293b',
+        labelBoxBorderColor: '#475569',
+        labelTextColor: '#f8fafc',
+        loopTextColor: '#cbd5e1',
+        noteBorderColor: '#eab308',
+        noteBkgColor: '#854d0e',
+        noteTextColor: '#fef08a'
+      }
+    });
   </script>
+
   <style>
-    body { font-family: system-ui, sans-serif; background: #1e1e1e; color: #ddd; margin: 0; padding: 24px; max-width: 900px; margin-inline: auto; }
-    h1 { color: #fff; }
-    h2 { color: #7dd3fc; margin-top: 2rem; border-bottom: 1px solid #444; padding-bottom: 0.5rem; }
-    p.hint { color: #aaa; font-size: 0.95rem; }
-    .mermaid { background: #2d2d2d; border-radius: 8px; padding: 16px; margin: 16px 0; }
-    a { color: #7dd3fc; }
+    :root {
+      --bg-main: #090d16;
+      --bg-card: #111827;
+      --bg-card-header: #1f2937;
+      --border-color: #374151;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.15);
+      --badge-bg: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    /* Top Nav */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      font-size: 1.6rem;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    .badge {
+      background: var(--badge-bg);
+      border: 1px solid #475569;
+      color: #38bdf8;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .quick-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .quick-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .quick-links a:hover {
+      color: var(--accent);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Notice Banner */
+    .info-banner {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+      border: 1px solid #3b82f640;
+      border-left: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .info-banner h3 {
+      font-size: 1rem;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-banner p {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+
+    .info-banner code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #0f172a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #f43f5e;
+      font-size: 0.85rem;
+    }
+
+    /* Filter / Navigation Bar */
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-btn:hover, .tab-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    /* Diagram Card */
+    .diagram-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      margin-bottom: 2.5rem;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .diagram-card:hover {
+      border-color: #4b5563;
+    }
+
+    .card-header {
+      background: var(--bg-card-header);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      background: #374151;
+      color: #e5e7eb;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #4b5563;
+      color: #fff;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 220px;
+      background: radial-gradient(circle at center, #1e293b33 0%, #111827 100%);
+    }
+
+    .mermaid {
+      width: 100%;
+      text-align: center;
+    }
+
+    .card-footer {
+      padding: 0.75rem 1.5rem;
+      background: #0f172a;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: #64748b;
+      font-size: 0.85rem;
+    }
   </style>
 </head>
 <body>
-  <h1>ChatApp Architecture — Live Preview</h1>
-  <p class="hint">MD preview mein diagram na dikhe to <strong>is file ko browser mein kholo</strong> (right-click → Open with → Chrome). Ya extension: <em>Markdown Preview Mermaid Support</em>.</p>
 
-  <h2>1. Simple system (dummy)</h2>
-  <pre class="mermaid">
-flowchart TB
-    U([User])
-    subgraph live [LIVE today]
-        B[Browser]
-        R["React App client/"]
-        D["assets.js dummy data"]
-        B --> R
-        R --> D
-    end
-    subgraph planned [PLANNED later]
-        API[REST API]
-        WS[Socket.io]
-        DB[(MongoDB)]
-    end
-    U --> B
-    R -.->|HTTP| API
-    R -.->|realtime| WS
-    API --> DB
-    WS --> DB
-  </pre>
+  <header>
+    <div class="brand">
+      <span class="brand-logo">💬 ChatApp</span>
+      <span class="badge">Live Diagram Viewer</span>
+    </div>
+    <div class="quick-links">
+      <a href="./system-design.md">System Design MD</a>
+      <a href="./chat-app-working.md">Chat App Working MD</a>
+      <a href="../../README.md">Main README</a>
+    </div>
+  </header>
 
-  <h2>2. Send message (sequence)</h2>
-  <pre class="mermaid">
+  <main class="container">
+
+    <!-- Info banner explaining rendering -->
+    <div class="info-banner">
+      <h3>💡 Why Diagrams Don't Render in standard VS Code Markdown preview</h3>
+      <p>VS Code/Cursor markdown preview lacks a built-in Mermaid compiler. To preview inside VS Code, install extension: <code>Markdown Preview Mermaid Support</code> (by Matt Bierner) and press <code>Ctrl+Shift+V</code>. Otherwise, <strong>this HTML file renders 100% of all diagrams in real-time in any browser!</strong></p>
+    </div>
+
+    <!-- Navigation Filters -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="filterCategory('all')">🌟 All Diagrams</button>
+      <button class="tab-btn" onclick="filterCategory('system')">🏗️ System Architecture</button>
+      <button class="tab-btn" onclick="filterCategory('realtime')">⚡ Real-time & Sockets</button>
+      <button class="tab-btn" onclick="filterCategory('journey')">🧭 User Journey</button>
+      <button class="tab-btn" onclick="filterCategory('auth')">🔐 Auth & Backend</button>
+      <button class="tab-btn" onclick="filterCategory('ratelimit')">🛡️ Rate Limiting (Redis)</button>
+    </div>
+
+    <!-- 1. SYSTEM DESIGN OVERVIEW -->
+    <section class="diagram-card" data-category="system">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-title">1. Overall Full-Stack System Architecture</div>
+          <div class="card-source">Source: docs/architecture/system-design.md</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart LR
+    User([User in Browser]) --> Client[React 19 + Vite Frontend]
+    Client --> API[Express API Server]
+    API --> DB[(MongoDB Database)]
+    API --> Cloud[Cloudinary Media CDN]
+    API --> Socket[Socket.IO Real-Time Server]
+    Client <-->|WebSocket| Socket
+        </pre>
+      </div>
+      <div class="card-footer">
+        📌 <strong>Overview:</strong> Full-stack communication flow between Vite SPA, Express REST controllers, Mongoose DB, and Socket.IO server.
+      </div>
+    </section>
+
+    <!-- 2. END-TO-END REALTIME SEQUENCE -->
+    <section class="diagram-card" data-category="realtime">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-title">2. End-to-End Real-Time Socket & Auth Sequence</div>
+          <div class="card-source">Source: README.md</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
 sequenceDiagram
-    participant You as User
-    participant UI as Chat UI
-    participant Server as Server
-    participant Friend as Friend
-    You->>UI: type and send Hi
-    UI->>Server: save message
-    Server->>Friend: deliver
-    Friend-->>You: reply shows
-  </pre>
+    autonumber
+    actor Client as React 19 Client
+    participant Express as Express.js API
+    participant Socket as Socket.IO Server
+    participant DB as MongoDB Database
+    participant Cloud as Cloudinary Storage
 
-  <h2>3. Offline fallback</h2>
-  <pre class="mermaid">
+    %% Authentication Flow
+    Client->>Express: POST /api/auth/signup (User Data)
+    Express->>Express: Validate Payload (Zod) & Hash Password
+    Express->>DB: Save User Document
+    Express-->>Client: Return JWT Token & User Profile
+
+    %% Media Upload Flow
+    Client->>Express: PUT /api/auth/update-profile (Image Base64)
+    Express->>Cloud: Upload Image
+    Cloud-->>Express: Return Secure Image URL
+    Express->>DB: Update Profile Picture URL
+    Express-->>Client: Updated User Profile
+
+    %% Real-time Socket Communication
+    Client->>Socket: Connect (query: userId)
+    Socket->>Socket: Map socket.id -> userId
+    Socket-->>Client: Broadcast "getOnlineUsers" Event
+
+    Client->>Socket: Emit "typing" ({ receiverId })
+    Socket-->>Client: Forward "typing" to Receiver
+
+    Client->>Express: POST /api/messages/send/:id (Message Content)
+    Express->>DB: Store Message Document
+    Express->>Socket: Dispatch Real-Time Message Event
+    Socket-->>Client: Deliver Message via Socket to Receiver
+        </pre>
+      </div>
+      <div class="card-footer">
+        📌 <strong>Overview:</strong> Complete lifecycle including user signup, profile avatar upload to Cloudinary, socket handshake, presence, typing status, and real-time message dispatch.
+      </div>
+    </section>
+
+    <!-- 3. USER JOURNEY FLOWCHART -->
+    <section class="diagram-card" data-category="journey">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-title">3. User Journey & Frontend Flow</div>
+          <div class="card-source">Source: docs/architecture/chat-app-working.md</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart TD
+    A[User opens app] --> B[React app loads]
+    B --> C[HomePage renders chat shell]
+    C --> D[Sidebar shows users]
+    D --> E[User selects a conversation]
+    E --> F[ChatContainer shows selected chat]
+    F --> G[User can read or send messages]
+        </pre>
+      </div>
+      <div class="card-footer">
+        📌 <strong>Overview:</strong> Navigation path from app mount, sidebar listing, user selection, and chat container rendering.
+      </div>
+    </section>
+
+    <!-- 4. BACKEND API AUTH FLOW -->
+    <section class="diagram-card" data-category="auth">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-title">4. Backend Protected Request & DB Flow</div>
+          <div class="card-source">Source: docs/architecture/chat-app-working.md</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant FE as React Frontend
+    participant BE as Express Backend
+    participant DB as MongoDB
+
+    U->>FE: Sign in / open chat
+    FE->>BE: Request protected route
+    BE->>DB: Read or write user/message data
+    DB-->>BE: Return data
+    BE-->>FE: Send JSON response
+    FE-->>U: Display result
+        </pre>
+      </div>
+      <div class="card-footer">
+        📌 <strong>Overview:</strong> User token verification via JWT middleware and database querying before sending JSON back to client.
+      </div>
+    </section>
+
+    <!-- 5. MESSAGE RETRIEVAL SEQUENCE -->
+    <section class="diagram-card" data-category="realtime">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-title">5. Message History Fetch Sequence</div>
+          <div class="card-source">Source: docs/architecture/system-design.md</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant C as React Client
+    participant A as Express API
+    participant DB as MongoDB
+
+    U->>C: Open app / select chat
+    C->>A: GET /api/messages/:id
+    A->>DB: Query messages between users
+    DB-->>A: Return message history
+    A-->>C: Send JSON payload
+    C-->>U: Render chat window with conversation
+        </pre>
+      </div>
+      <div class="card-footer">
+        📌 <strong>Overview:</strong> API-driven historical message sync when switching conversations in the sidebar.
+      </div>
+    </section>
+
+    <!-- 6. REDIS RATE LIMITING FLOW -->
+    <section class="diagram-card" data-category="ratelimit">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-title">6. Redis Fixed-Window Rate Limiter Architecture</div>
+          <div class="card-source">Source: extraQuestions/redisMsgCnter.md</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart TD
+    Req[Incoming Send Message Request] --> MW[Rate Limiter Middleware]
+    MW --> Key["Check Redis key (rate:userId)"]
+    Key --> Incr["redis.incr(key)"]
+    Incr --> Check{Count > Limit?}
+    Check -->|Yes| Block["429 Too Many Requests\n('Slow down')"]
+    Check -->|No| Allow["next() -> Save to MongoDB & Emit Socket"]
+    Key -.->|First Request in Window| Expire["redis.expire(key, 10s)"]
+        </pre>
+      </div>
+      <div class="card-footer">
+        📌 <strong>Overview:</strong> Anti-spam middleware architecture protecting Socket.IO and Mongo backend from high-frequency message flooding.
+      </div>
+    </section>
+
+    <!-- 7. OFFLINE / FALLBACK FLOW -->
+    <section class="diagram-card" data-category="system">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-title">7. Network Fallback & Offline Queue Flow</div>
+          <div class="card-source">Source: docs/architecture/DEMO-what-diagrams-look-like.md</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
 flowchart LR
     A[Send message] --> B{Internet OK?}
-    B -->|Yes| C[Server OK]
-    B -->|No| D[Offline banner]
-    D --> E[Queue locally]
-    E --> F[Retry when online]
+    B -->|Yes| C[Server Delivers Message]
+    B -->|No| D[Display Offline Banner]
+    D --> E[Queue Locally in IndexedDB/State]
+    E --> F[Retry Automatically When Online]
     F --> C
-  </pre>
+        </pre>
+      </div>
+      <div class="card-footer">
+        📌 <strong>Overview:</strong> Resilient client flow handling intermittent connectivity drops and reconnect queues.
+      </div>
+    </section>
 
-  <p><a href="./DEMO-what-diagrams-look-like.md">Back to DEMO markdown</a> · <a href="./system-design.md">system-design.md</a></p>
+  </main>
+
+  <footer>
+    <p>ChatApp Architecture Visualizer • Updated August 2026 • HxWildE/ChatApp</p>
+  </footer>
+
+  <script>
+    function filterCategory(cat) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      const cards = document.querySelectorAll('.diagram-card');
+      cards.forEach(card => {
+        if (cat === 'all' || card.getAttribute('data-category') === cat) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+
 </body>
 </html>

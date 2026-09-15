@@ -1,5 +1,7 @@
 # ChatApp — System Design
 
+> 📊 **Diagram visualizer:** To view all interactive diagrams in your browser without any extension, open [`preview.html`](./preview.html). To view them directly inside VS Code markdown preview (`Ctrl+Shift+V`), install the **Markdown Preview Mermaid Support** extension.
+
 This document reflects the current implementation status of the project as of August 2026.
 
 ## Overview

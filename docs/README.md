@@ -9,6 +9,7 @@ This folder holds the working notes, architecture references, and interview prep
 - [docs/interview/part-01.md](interview/part-01.md) — interview notes and talking points
 - [docs/architecture/system-design.md](architecture/system-design.md) — overall system structure
 - [docs/architecture/chat-app-working.md](architecture/chat-app-working.md) — user journey and app flow
+- [docs/architecture/preview.html](architecture/preview.html) — **Interactive Visual Diagrams Viewer (Browser)**
 - [docs/architecture/gifs/README.md](architecture/gifs/README.md) — GIF/demo asset notes
 
 ## Recommended update flow

@@ -1,5 +1,7 @@
 # ChatApp — How It Works
 
+> 📊 **Diagram visualizer:** Diagrams not rendering in VS Code preview? Open [`preview.html`](./preview.html) in your browser, or install the VS Code extension **Markdown Preview Mermaid Support** (by Matt Bierner).
+
 This note explains the current application flow and the main files involved.
 
 ## User journey
