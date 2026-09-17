@@ -1,12 +1,13 @@
-# Active doc pointers
+# 📂 Active Document Pointers
 
-These are the main documentation files currently in use for the project.
+Welcome to the documentation hub. These are the main, active documentation files currently guiding the development of the **ChatApp** project.
 
-| Type | Active file |
-|------|-------------|
-| Progress | [docs/daily/progress.md](daily/progress.md) |
-| Interview | [docs/interview/part-01.md](interview/part-01.md) |
-| System design | [docs/architecture/system-design.md](architecture/system-design.md) |
-| Chat app working | [docs/architecture/chat-app-working.md](architecture/chat-app-working.md) |
+| Document Type | Active File | Description |
+|---------------|-------------|-------------|
+| **📈 Progress Log** | [`docs/daily/progress.md`](daily/progress.md) | Tracks feature implementation, milestones, and daily dev logs. |
+| **🎙️ Interview Notes** | [`docs/interview/part-01.md`](interview/part-01.md) | Technical discussion points and Q&A prep for interviews. |
+| **🏗️ System Design** | [`docs/architecture/system-design.md`](architecture/system-design.md) | Overall architecture, data flow, and component relationships. |
+| **🔄 User Journey** | [`docs/architecture/chat-app-working.md`](architecture/chat-app-working.md) | App flow, user interactions, and specific UX behaviors. |
 
-Use these files as the source of truth for the current implementation state and roadmap.
+> [!NOTE]
+> Please use these files as the **single source of truth** for the current implementation state and the roadmap of the project.

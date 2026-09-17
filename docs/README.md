@@ -1,42 +1,52 @@
-# ChatApp Documentation
+# 📚 ChatApp Documentation
 
-This folder holds the working notes, architecture references, and interview prep material for the project.
+This folder holds the working notes, architecture references, and interview preparation material for the project.
 
-## Current documentation set
+## 🗂️ Current Documentation Set
 
-- [docs/ACTIVE.md](ACTIVE.md) — active docs map
-- [docs/daily/progress.md](daily/progress.md) — feature and milestone log
-- [docs/interview/part-01.md](interview/part-01.md) — interview notes and talking points
-- [docs/architecture/system-design.md](architecture/system-design.md) — overall system structure
-- [docs/architecture/chat-app-working.md](architecture/chat-app-working.md) — user journey and app flow
-- [docs/architecture/preview.html](architecture/preview.html) — **Interactive Visual Diagrams Viewer (Browser)**
-- [docs/architecture/gifs/README.md](architecture/gifs/README.md) — GIF/demo asset notes
+- [**docs/ACTIVE.md**](ACTIVE.md) — Active docs map and pointers
+- [**docs/daily/progress.md**](daily/progress.md) — Feature and milestone log
+- [**docs/interview/part-01.md**](interview/part-01.md) — Interview notes and talking points
+- [**docs/architecture/system-design.md**](architecture/system-design.md) — Overall system structure and architecture
+- [**docs/architecture/chat-app-working.md**](architecture/chat-app-working.md) — User journey and application flow
+- [**docs/architecture/preview.html**](architecture/preview.html) — **Interactive Visual Diagrams Viewer (Browser)**
+- [**docs/architecture/gifs/README.md**](architecture/gifs/README.md) — GIF/demo asset notes
 
-## Recommended update flow
+---
 
-After a meaningful feature change, update the docs in this order:
+## 🔁 Recommended Update Flow
 
-1. Progress log in [docs/daily/progress.md](daily/progress.md)
-2. Architecture notes in [docs/architecture/system-design.md](architecture/system-design.md)
-3. User-flow notes in [docs/architecture/chat-app-working.md](architecture/chat-app-working.md)
-4. Interview notes in [docs/interview/part-01.md](interview/part-01.md)
+After a meaningful feature change, update the docs in this logical order to maintain consistency:
 
-## Folder layout
+1. **Progress log** in [docs/daily/progress.md](daily/progress.md)
+2. **Architecture notes** in [docs/architecture/system-design.md](architecture/system-design.md)
+3. **User-flow notes** in [docs/architecture/chat-app-working.md](architecture/chat-app-working.md)
+4. **Interview notes** in [docs/interview/part-01.md](interview/part-01.md)
+
+---
+
+## 📂 Folder Layout
 
 ```text
 docs/
-  ACTIVE.md
-  README.md
-  daily/progress.md
-  interview/part-01.md
-  architecture/
-    system-design.md
-    chat-app-working.md
-    gifs/README.md
+  ├── ACTIVE.md
+  ├── README.md
+  ├── daily/
+  │   └── progress.md
+  ├── interview/
+  │   └── part-01.md
+  └── architecture/
+      ├── system-design.md
+      ├── chat-app-working.md
+      ├── preview.html
+      └── gifs/
+          └── README.md
 ```
 
-## Notes
+---
 
-- The current implementation already includes a React frontend, an Express backend, and Mongoose-based persistence.
-- The architecture docs should be updated whenever routes, models, or UI flow change.
-- Mermaid diagrams can be previewed in VS Code with Markdown preview support.
+## 📝 Important Notes
+
+- The current implementation includes a **React frontend**, an **Express backend**, and **Mongoose-based persistence**.
+- The architecture docs should be actively updated whenever routes, database models, or UI flows change.
+- **Visuals & Diagrams**: Mermaid diagrams can be previewed in VS Code with the Markdown preview support extension, or natively in the browser via `preview.html`.
