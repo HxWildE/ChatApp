@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatApp — 15 Must-Know Interview Diagrams</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, sans-serif',
+      flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis' },
+      sequence: { useMaxWidth: false, mirrorActors: false, messageAlign: 'center' },
+      er: { useMaxWidth: false },
+      themeVariables: {
+        darkMode: true,
+        background: '#0f172a',
+        primaryColor: '#3b82f6',
+        primaryTextColor: '#f8fafc',
+        primaryBorderColor: '#60a5fa',
+        lineColor: '#94a3b8',
+        secondaryColor: '#1e293b',
+        tertiaryColor: '#0f172a',
+        mainBkg: '#1e293b',
+        nodeBorder: '#38bdf8',
+        clusterBkg: '#0f172a88',
+        clusterBorder: '#475569',
+        titleColor: '#f8fafc',
+        edgeLabelBackground: '#1e293b',
+        actorBkg: '#1e293b',
+        actorBorder: '#60a5fa',
+        actorTextColor: '#f8fafc',
+        actorLineColor: '#64748b',
+        signalColor: '#38bdf8',
+        signalTextColor: '#f8fafc',
+        labelBoxBkgColor: '#1e293b',
+        labelBoxBorderColor: '#475569',
+        labelTextColor: '#f8fafc',
+        loopTextColor: '#cbd5e1',
+        noteBorderColor: '#eab308',
+        noteBkgColor: '#854d0e',
+        noteTextColor: '#fef08a',
+        activationBorderColor: '#60a5fa',
+        activationBkgColor: '#1e3a5f'
+      }
+    });
+  </script>
+
+  <style>
+    :root {
+      --bg-body: #030712;
+      --bg-card: #0f172a;
+      --bg-card-header: #1e293b;
+      --bg-card-footer: #0c1322;
+      --border: #1e293b;
+      --border-hover: #334155;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-blue: #38bdf8;
+      --accent-indigo: #818cf8;
+      --accent-green: #34d399;
+      --accent-amber: #fbbf24;
+      --accent-red: #f87171;
+      --glow-blue: rgba(56, 189, 248, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.65;
+      padding-bottom: 100px;
+    }
+
+    /* ── Hero Header ── */
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      border-bottom: 1px solid #1e293b;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ── Sticky Nav ── */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(3, 7, 18, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+    }
+    .nav-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .nav-label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+    .filter-btn {
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 500;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: #0284c7;
+      color: #fff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 12px var(--glow-blue);
+    }
+    .filter-btn.priority-red { border-left: 3px solid #f87171; }
+    .filter-btn.priority-yellow { border-left: 3px solid #fbbf24; }
+    .filter-btn.priority-green { border-left: 3px solid #34d399; }
+
+    /* ── Container ── */
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* ── Diagram Card ── */
+    .diagram-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 3rem;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      transition: border-color 0.25s ease;
+    }
+    .diagram-card:hover { border-color: var(--border-hover); }
+
+    .card-header {
+      background: var(--bg-card-header);
+      padding: 1.1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .card-num {
+      background: #0f172a;
+      border: 1px solid #475569;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      width: 2.2rem;
+      height: 2.2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .card-title-group { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+    .card-title { font-size: 1.1rem; font-weight: 700; color: #f8fafc; }
+    .card-subtitle { font-size: 0.82rem; color: var(--text-dim); margin-top: 2px; }
+
+    .priority-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .priority-badge.must { background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; }
+    .priority-badge.high { background: #78350f; color: #fcd34d; border: 1px solid #92400e; }
+    .priority-badge.good { background: #064e3b; color: #6ee7b7; border: 1px solid #065f46; }
+
+    .card-body {
+      padding: 2rem 1.5rem;
+      overflow-x: auto;
+      overflow-y: hidden;
+      display: block; /* Removed flex to ensure horizontal scroll works smoothly without squishing */
+      min-height: 250px;
+      background: radial-gradient(ellipse at center, #1e293b22 0%, transparent 70%);
+    }
+    .mermaid { width: 100%; min-width: 900px; text-align: center; margin: 0 auto; }
+
+    .card-footer {
+      padding: 1rem 1.5rem;
+      background: var(--bg-card-footer);
+      border-top: 1px solid var(--border);
+    }
+    .card-footer h4 {
+      font-size: 0.85rem;
+      color: var(--accent-blue);
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+    }
+    .card-footer p, .card-footer li {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .card-footer ul { padding-left: 1.2rem; }
+    .card-footer code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #1e293b;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #f472b6;
+      font-size: 0.8rem;
+    }
+    .card-footer .note {
+      background: #78350f33;
+      border: 1px solid #92400e66;
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      margin-top: 0.7rem;
+      color: #fcd34d;
+      font-size: 0.82rem;
+    }
+    .key-points-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .key-point {
+      background: #1e293b55;
+      border: 1px solid #334155;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: #cbd5e1;
+    }
+
+    /* ── Table inside footer ── */
+    .card-footer table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      font-size: 0.82rem;
+    }
+    .card-footer th {
+      text-align: left;
+      color: var(--accent-blue);
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid #334155;
+      font-weight: 600;
+    }
+    .card-footer td {
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    .card-footer tr:last-child td { border-bottom: none; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+    footer a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ HERO ═══ -->
+  <div class="hero">
+    <h1>📐 15 Must-Know Interview Diagrams</h1>
+    <p>ChatApp Architecture, Database, Auth, Real-Time, Scalability — every flow an interviewer can ask about, visualized.</p>
+  </div>
+
+  <!-- ═══ STICKY NAV ═══ -->
+  <nav class="sticky-nav">
+    <div class="nav-inner">
+      <span class="nav-label">Filter:</span>
+      <button class="filter-btn active" onclick="filterDiagrams('all')">All 15</button>
+      <button class="filter-btn priority-red" onclick="filterDiagrams('must')">🔴 Must Know (5)</button>
+      <button class="filter-btn priority-yellow" onclick="filterDiagrams('high')">🟡 High (5)</button>
+      <button class="filter-btn priority-green" onclick="filterDiagrams('good')">🟢 Good to Know (5)</button>
+      <span class="nav-label" style="margin-left:auto">Category:</span>
+      <button class="filter-btn" onclick="filterDiagrams('arch')">🏗️ Architecture</button>
+      <button class="filter-btn" onclick="filterDiagrams('auth')">🔐 Auth</button>
+      <button class="filter-btn" onclick="filterDiagrams('rt')">⚡ Real-time</button>
+      <button class="filter-btn" onclick="filterDiagrams('db')">🗄️ Database</button>
+      <button class="filter-btn" onclick="filterDiagrams('feature')">⭐ Features</button>
+      <button class="filter-btn" onclick="filterDiagrams('scale')">🚀 Scale</button>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 01. FULL-STACK SYSTEM ARCHITECTURE                         -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="must" data-category="arch">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">01</span>
+          <div>
+            <div class="card-title">Full-Stack System Architecture</div>
+            <div class="card-subtitle">Q: "Draw me the architecture of your chat app."</div>
+          </div>
+        </div>
+        <span class="priority-badge must">🔴 Must Know</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart TB
+    subgraph BROWSER["BROWSER - Client"]
+        direction TB
+        REACT["React 19 SPA<br/>+ Vite 8 HMR"]
+        ROUTER["React Router 7"]
+        AUTH_CTX["AuthContext<br/>(login, socket, onlineUsers)"]
+        CHAT_CTX["ChatContext<br/>(messages, users, selectedUser)"]
+        AXIOS["Axios<br/>(HTTP Client)"]
+        SOCK_C["Socket.io-client<br/>(WebSocket)"]
+
+        REACT --> ROUTER
+        ROUTER --> AUTH_CTX --> CHAT_CTX
+        CHAT_CTX --> AXIOS
+        CHAT_CTX --> SOCK_C
+    end
+
+    subgraph SERVER["NODE.JS SERVER - Express 5"]
+        direction TB
+        EXPRESS["Express 5 App<br/>+ cors + json parser"]
+        AUTH_R["/api/auth/*<br/>(signup, login, check, update-profile)"]
+        MSG_R["/api/messages/*<br/>(send, get, users, mark)"]
+        PROTECT["protectRoute<br/>(JWT verify)"]
+        ZOD["Zod Validation"]
+        CTRL["Controllers<br/>(userCtrl + msgCtrl)"]
+        SOCKET_S["Socket.IO Server<br/>(same port 5000)"]
+        MAP["userSocketMap<br/>{ userId: socketId }"]
+
+        EXPRESS --> CORS_MW --> JSON_MW
+        JSON_MW --> AUTH_ROUTES
+        JSON_MW --> MSG_ROUTES
+        AUTH_ROUTES -->|"/signup, /login"| ZOD --> CTRL
+        MSG_ROUTES -->|"/send/:id, /:id"| PROTECT --> CTRL
+        AUTH_ROUTES -->|"/check, /update-profile"| PROTECT --> CTRL
+        EXPRESS --> SOCKET_S --> MAP
+    end
+
+    subgraph EXT["EXTERNAL SERVICES"]
+        MONGO[("MongoDB Atlas<br/>users + messages")]
+        CDN["Cloudinary CDN<br/>profile pics + chat images"]
+    end
+
+    AXIOS -->|"POST /api/auth/login<br/>POST /api/messages/send"| EXPRESS
+    SOCK_C <-->|"ws:// (userId query)<br/>Events: typing, newMessage"| SOCKET_S
+    CTRL -->|"User.findOne()<br/>Message.find()"| MONGO
+    CTRL -->|"cloudinary.uploader.upload()"| CDN
+    CTRL -->|"io.to(socketId).emit()"| SOCKET_S
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>Key Interview Points</h4>
+        <div class="key-points-grid">
+          <div class="key-point">📡 Same HTTP server hosts both Express REST API and Socket.IO WebSocket</div>
+          <div class="key-point">🔑 Auth is JWT in header (not cookies) — stateless and scalable</div>
+          <div class="key-point">☁️ Images stored on Cloudinary CDN, not MongoDB (16MB doc limit)</div>
+          <div class="key-point">🔄 Two channels: HTTP for CRUD, WebSocket for real-time push</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 02. HTTP REQUEST PIPELINE                                  -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="must" data-category="arch">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">02</span>
+          <div>
+            <div class="card-title">HTTP Request Pipeline (Middleware Chain)</div>
+            <div class="card-subtitle">Q: "Walk me through what happens when a request hits your server."</div>
+          </div>
+        </div>
+        <span class="priority-badge must">🔴 Must Know</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart TB
+    REQ["HTTP Request<br/>from Axios"] --> CORS["cors()<br/>Allow cross-origin"]
+    CORS --> JSON["express.json()<br/>Parse body<br/>15mb limit"]
+    JSON --> ROUTE{"Route<br/>Matcher"}
+
+    ROUTE -->|"PUBLIC:<br/>/auth/signup<br/>/auth/login"| ZOD["Zod<br/>safeParse()"]
+    ZOD -->|Valid| CTRL_PUB["Controller"]
+    ZOD -->|Invalid| ERR_Z["400<br/>Validation Error"]
+
+    ROUTE -->|"PROTECTED:<br/>/auth/check<br/>/auth/update-profile<br/>/messages/*"| PROT["protectRoute"]
+    PROT --> READ["Read<br/>req.headers.token"]
+    READ --> VERIFY["jwt.verify()<br/>token + SECRET"]
+    VERIFY -->|Valid| FIND["User.findById()<br/>.select('-password')"]
+    FIND --> SET["req.user = user<br/>next()"]
+    SET --> CTRL_PRV["Controller"]
+    VERIFY -->|Invalid| ERR_A["401<br/>Unauthorized"]
+
+    CTRL_PUB --> DB[("MongoDB")]
+    CTRL_PRV --> DB
+    CTRL_PRV -->|"image?"| CLOUD["Cloudinary"]
+
+    DB --> RES["JSON Response<br/>{success, data}"]
+    CLOUD --> RES
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>Key Interview Points</h4>
+        <ul>
+          <li>Middleware runs in <strong>order</strong>: cors → json → route → auth → controller</li>
+          <li><code>next()</code> passes control to next middleware. Without it, request hangs forever</li>
+          <li><code>.select('-password')</code> ensures hashed password never reaches frontend</li>
+          <li>Public routes (signup/login) skip protectRoute — Zod validates input directly</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 03. JWT AUTHENTICATION FLOW                                -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="must" data-category="auth">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">03</span>
+          <div>
+            <div class="card-title">JWT Authentication Flow (Login → Every Request)</div>
+            <div class="card-subtitle">Q: "How does your authentication work? Explain JWT."</div>
+          </div>
+        </div>
+        <span class="priority-badge must">🔴 Must Know</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor User as User
+    participant FE as React Frontend
+    participant API as Express Server
+    participant DB as MongoDB
+
+    rect rgba(30, 58, 138, 0.15)
+    Note over User,DB: PHASE 1 - LOGIN (happens once)
+    User->>FE: Enter email + password
+    FE->>API: POST /api/auth/login
+    API->>API: Zod loginSchema.safeParse()
+    API->>DB: User.findOne({ email })
+    DB-->>API: User doc (with hashed password)
+    API->>API: bcrypt.compare(password, hash)
+    API->>API: jwt.sign({ userId }, SECRET)
+    API-->>FE: { token: "eyJhb...", userData }
+    FE->>FE: localStorage.setItem("token", token)
+    FE->>FE: axios.defaults.headers["token"] = token
+    FE->>FE: connectSocket(userData)
+    end
+
+    rect rgba(5, 150, 105, 0.12)
+    Note over User,DB: PHASE 2 - EVERY REQUEST (automatic)
+    User->>FE: Any action (send msg, etc)
+    FE->>API: Request + header { token: "eyJhb..." }
+    API->>API: protectRoute: jwt.verify(token, SECRET)
+    API->>DB: User.findById(decoded.userId)
+    DB-->>API: User document
+    API->>API: req.user = user, next()
+    API-->>FE: Protected response
+    end
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>JWT Token Anatomy</h4>
+        <p><code>eyJhbGci...  .  eyJ1c2VySWQi...  .  SflKxwRJ...</code></p>
+        <p>= <strong>Header</strong> (algorithm) . <strong>Payload</strong> (userId — base64, NOT encrypted!) . <strong>Signature</strong> (HMAC-SHA256)</p>
+        <div class="note">⚠️ JWT is <strong>SIGNED, not ENCRYPTED</strong>. Anyone can decode the payload. Never put passwords/SSN in it. The signature only proves it wasn't tampered with.</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 04. SEND MESSAGE E2E                                       -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="must" data-category="feature">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">04</span>
+          <div>
+            <div class="card-title">Send Message — E2E Dual Delivery Path</div>
+            <div class="card-subtitle">Q: "Walk me through what happens when User A sends a message to User B."</div>
+          </div>
+        </div>
+        <span class="priority-badge must">🔴 Must Know</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor A as User A (Sender)
+    participant FE_A as React A
+    participant API as Express API
+    participant DB as MongoDB
+    participant SOCK as Socket.IO
+    participant FE_B as React B
+    actor B as User B (Receiver)
+
+    A->>FE_A: Type "Hello", click Send
+    FE_A->>SOCK: emit("stopTyping")
+    FE_A->>FE_A: setInput("")
+    FE_A->>API: POST /api/messages/send/:B_id
+    Note over FE_A,API: JWT in header, {text:"Hello"} in body
+    API->>API: protectRoute -> jwt.verify
+    API->>DB: Message.create({sender:A, receiver:B, text})
+    DB-->>API: Saved message doc
+
+    par HTTP Response to Sender
+        API-->>FE_A: {success: true, newMessage}
+        FE_A->>FE_A: setMessages(prev => [...prev, msg])
+        FE_A-->>A: "Hello" appears in chat
+    and WebSocket Push to Receiver
+        API->>SOCK: userSocketMap[B_id] -> socketId
+        SOCK->>FE_B: emit("newMessage", msg)
+        alt B has A's chat open
+            FE_B->>FE_B: setMessages(prev => [...prev, msg])
+            FE_B->>API: markSeen(msg._id)
+            FE_B-->>B: "Hello" appears in chat
+        else B chatting with someone else
+            FE_B->>FE_B: unseenMessages[A_id] += 1
+            FE_B-->>B: Badge "1" on A's sidebar
+        end
+    end
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>The Critical Insight</h4>
+        <div class="note">Sender gets the message via <strong>HTTP response</strong>. Receiver gets it via <strong>WebSocket push</strong>. Two completely different delivery mechanisms, both updating the same <code>messages[]</code> state array.</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 05. MONGODB ER DIAGRAM                                     -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="must" data-category="db">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">05</span>
+          <div>
+            <div class="card-title">MongoDB Schema & Relationships (ER Diagram)</div>
+            <div class="card-subtitle">Q: "Tell me about your database schema. How are the collections related?"</div>
+          </div>
+        </div>
+        <span class="priority-badge must">🔴 Must Know</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+erDiagram
+    USERS {
+        ObjectId _id PK "auto-generated 24-char hex"
+        String email UK "unique required"
+        String fullName "required"
+        String password "bcrypt hashed min 6"
+        String profilePic "Cloudinary URL"
+        String bio "optional"
+        Date createdAt "auto timestamps"
+        Date updatedAt "auto timestamps"
+    }
+
+    MESSAGES {
+        ObjectId _id PK "auto-generated"
+        ObjectId senderId FK "ref User required"
+        ObjectId receiverId FK "ref User required"
+        String text "optional"
+        String image "Cloudinary URL optional"
+        Boolean seen "default false"
+        Date createdAt "auto timestamps"
+        Date updatedAt "auto timestamps"
+    }
+
+    USERS ||--o{ MESSAGES : "sends as senderId"
+    USERS ||--o{ MESSAGES : "receives as receiverId"
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>Key DBMS Points</h4>
+        <table>
+          <tr><th>Topic</th><th>Detail</th></tr>
+          <tr><td>Collections</td><td>2 only: <code>users</code> and <code>messages</code> (Mongoose pluralizes model name)</td></tr>
+          <tr><td>Relationships</td><td>Message references User via <code>senderId</code> and <code>receiverId</code> (like foreign keys)</td></tr>
+          <tr><td><code>ref: 'User'</code></td><td>Enables <code>.populate()</code> (SQL-like JOIN) — not used here but relationship is declared</td></tr>
+          <tr><td><code>timestamps: true</code></td><td>Mongoose auto-manages <code>createdAt</code> and <code>updatedAt</code></td></tr>
+          <tr><td>Why MongoDB?</td><td>Document model = JSON-like, flexible schema (text OR image, no ALTER TABLE)</td></tr>
+          <tr><td>16MB limit</td><td>That's why images go to Cloudinary, not stored in DB</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 06. SOCKET.IO LIFECYCLE                                    -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="high" data-category="rt">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">06</span>
+          <div>
+            <div class="card-title">Socket.IO Connection Lifecycle</div>
+            <div class="card-subtitle">Q: "How does the WebSocket connection get established?"</div>
+          </div>
+        </div>
+        <span class="priority-badge high">🟡 High</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor User as User
+    participant FE as React AuthContext
+    participant HTTP as HTTP Server :5000
+    participant SOCK as Socket.IO Server
+    participant MAP as userSocketMap
+
+    rect rgba(30, 58, 138, 0.12)
+    Note over User,MAP: CONNECTION
+    User->>FE: Login / page load with valid token
+    FE->>FE: connectSocket(userData)
+    FE->>HTTP: HTTP GET (Upgrade: websocket)
+    Note over FE,HTTP: ws://backend?userId=67fb37...
+    HTTP->>SOCK: 101 Switching Protocols
+    SOCK->>MAP: map["67fb37..."] = socket.id
+    SOCK->>SOCK: io.emit("getOnlineUsers", keys)
+    SOCK-->>FE: ["67fb37...", "89cd12...", ...]
+    FE->>FE: setOnlineUsers(list)
+    end
+
+    rect rgba(5, 150, 105, 0.1)
+    Note over User,MAP: ACTIVE SESSION
+    FE->>SOCK: emit("typing", {receiverId})
+    SOCK->>MAP: Look up receiverId
+    SOCK-->>FE: to(socketId).emit("typing")
+    end
+
+    rect rgba(220, 38, 38, 0.1)
+    Note over User,MAP: DISCONNECTION
+    User->>FE: Logout / close tab
+    FE->>SOCK: socket.disconnect()
+    SOCK->>MAP: delete map["67fb37..."]
+    SOCK->>SOCK: io.emit("getOnlineUsers", updated)
+    end
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>Why <code>http.createServer(app)</code>?</h4>
+        <p>Socket.IO needs the raw HTTP server object to intercept the WebSocket upgrade handshake. <code>app.listen()</code> creates its own internal server you can't access.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 07. ONLINE PRESENCE                                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="high" data-category="rt">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">07</span>
+          <div>
+            <div class="card-title">Online Presence (Green Dot) Flow</div>
+            <div class="card-subtitle">Q: "How do you know which users are currently online?"</div>
+          </div>
+        </div>
+        <span class="priority-badge high">🟡 High</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart TD
+    A["User A logs in"] --> B["connectSocket(userData)"]
+    B --> C["io(url, {query: {userId: A._id}})"]
+    C --> D["Server: io.on('connection')"]
+    D --> E["userSocketMap[A_id] = socket.id"]
+    E --> F["io.emit('getOnlineUsers',<br/>Object.keys(map))"]
+    F --> G["Broadcast to ALL clients"]
+    G --> H["Every client:<br/>setOnlineUsers(ids)"]
+    H --> I{"onlineUsers.includes(user._id)?"}
+    I -->|"Yes"| J["Online 🟢"]
+    I -->|"No"| K["Offline ⚫"]
+
+    L["User A closes browser"] --> M["Server: socket.on('disconnect')"]
+    M --> N["delete userSocketMap[A_id]"]
+    N --> O["io.emit('getOnlineUsers', updatedList)"]
+    O --> G
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>userSocketMap at Runtime</h4>
+        <p><code>{ "67fb37abc": "socket_xYz", "67fb37def": "socket_aBc" }</code></p>
+        <p><code>Object.keys(map)</code> → <code>["67fb37abc", "67fb37def"]</code> → sent to all clients → they check if each sidebar user ID is in the array.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 08. TYPING INDICATOR                                       -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="high" data-category="rt">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">08</span>
+          <div>
+            <div class="card-title">Typing Indicator — Debounce + Socket</div>
+            <div class="card-subtitle">Q: "How does the typing indicator work? What's the debounce logic?"</div>
+          </div>
+        </div>
+        <span class="priority-badge high">🟡 High</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor A as User A (Typing)
+    participant FE_A as ChatContainer A
+    participant REF as useRef(timer)
+    participant SOCK as Socket.IO
+    participant FE_B as ChatContainer B
+    actor B as User B
+
+    A->>FE_A: Types "H"
+    FE_A->>SOCK: emit("typing", {receiverId: B})
+    SOCK->>FE_B: emit("typing", {senderId: A})
+    FE_B->>FE_B: setIsTyping(true)
+    FE_B-->>B: "typing..." shows
+    FE_A->>REF: setTimeout(stop, 1500ms)
+
+    A->>FE_A: Types "e" (400ms later)
+    FE_A->>SOCK: emit("typing") again
+    FE_A->>REF: clearTimeout(old), setTimeout(stop, 1500ms)
+
+    A->>FE_A: Types "y" (300ms later)
+    FE_A->>REF: clearTimeout, setTimeout RESET
+
+    Note over A,B: User STOPS typing for 1500ms
+
+    REF->>FE_A: Timer fires
+    FE_A->>SOCK: emit("stopTyping", {receiverId: B})
+    SOCK->>FE_B: emit("stopTyping", {senderId: A})
+    FE_B->>FE_B: setIsTyping(false)
+    FE_B-->>B: "typing..." disappears
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>Why <code>useRef</code> not <code>useState</code>?</h4>
+        <p><code>useRef</code> stores the timeout ID without causing re-renders. <code>useState</code> would trigger a re-render on every keystroke just to track a timer the user never sees — infinite render loop risk.</p>
+        <div class="note">useEffect cleanup: <code>return () => socket.off("typing", handler)</code> prevents "ghost typing" when switching chats.</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 09. REACT COMPONENT TREE                                   -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="high" data-category="arch">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">09</span>
+          <div>
+            <div class="card-title">React Component Tree & Context Hierarchy</div>
+            <div class="card-subtitle">Q: "How is your React app structured? What's your state management approach?"</div>
+          </div>
+        </div>
+        <span class="priority-badge high">🟡 High</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart TD
+    BR["BrowserRouter"] --> AP["AuthProvider<br/>authUser, socket, onlineUsers<br/>login(), signup(), logout()"]
+    AP --> CP["ChatProvider<br/>messages, users, selectedUser<br/>sendMessage(), getMessages()"]
+    CP --> APP["App.jsx (Routes)"]
+    APP --> LOGIN["/login<br/>LoginPage"]
+    APP --> HOME["/ (HomePage)"]
+    APP --> PROFILE["/profile<br/>ProfilePage"]
+
+    HOME --> SB["Sidebar<br/>User list + search<br/>Online dots + badges"]
+    HOME --> CC["ChatContainer<br/>Message thread<br/>Input + image attach<br/>Typing indicator"]
+    HOME --> RS["RightSidebar<br/>User info<br/>Shared media"]
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>Why This Nesting Order?</h4>
+        <ul>
+          <li><code>BrowserRouter</code> must wrap everything using routes</li>
+          <li><code>AuthProvider</code> before <code>ChatProvider</code> — ChatContext needs socket from AuthContext</li>
+          <li>If reversed, ChatProvider gets <code>undefined</code> when calling <code>useContext(AuthContext)</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 10. SESSION RESTORATION                                    -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="high" data-category="auth">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">10</span>
+          <div>
+            <div class="card-title">Page Load / Session Restoration Flow</div>
+            <div class="card-subtitle">Q: "What happens when a user refreshes the page?"</div>
+          </div>
+        </div>
+        <span class="priority-badge high">🟡 High</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart TD
+    A["Browser opens / Refresh"] --> B["main.jsx renders"]
+    B --> C["AuthProvider mounts"]
+    C --> D["useState(<br/>localStorage.getItem('token')<br/>)"]
+    D --> E{"token<br/>exists?"}
+
+    E -->|"Yes"| F["useEffect fires"]
+    F --> G["Set axios header"]
+    G --> H["GET /api/auth/check"]
+    H --> I{"Token<br/>valid?"}
+
+    I -->|"Valid"| J["setAuthUser(user)"]
+    J --> K["connectSocket(user)"]
+    K --> L["HomePage with live chat"]
+
+    I -->|"Invalid"| M["authUser = null"]
+    M --> N["Navigate to /login"]
+
+    E -->|"No"| O["authUser = null"]
+    O --> N
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>Key Insight</h4>
+        <p>JWT + localStorage = stateless persistence. Server never stores sessions. Token is self-contained — verify signature, extract userId, load user from DB. Works across multiple server instances without shared session store.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 11. IMAGE UPLOAD                                           -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="good" data-category="feature">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">11</span>
+          <div>
+            <div class="card-title">Image Upload Pipeline (Base64 → Cloudinary → CDN)</div>
+            <div class="card-subtitle">Q: "How do you handle image uploads? Why not store them in DB?"</div>
+          </div>
+        </div>
+        <span class="priority-badge good">🟢 Good to Know</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart LR
+    A["User picks image"] --> B["FileReader<br/>readAsDataURL()"]
+    B --> C["base64 string<br/>data:image/png;base64,..."]
+    C --> D["axios.post()<br/>in request body"]
+    D -->|"~33% larger<br/>than original"| E["Express Server<br/>15mb body limit"]
+    E --> F["cloudinary.uploader<br/>.upload(base64)"]
+    F --> G["Cloudinary CDN<br/>global edge servers"]
+    G --> H["Returns secure_url:<br/>https://res.cloudinary.com/..."]
+    H --> I["Save URL in MongoDB<br/>Message.image or<br/>User.profilePic"]
+    I --> J["Response to client"]
+    J --> K["React: img src=url"]
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>Why Not Store in MongoDB?</h4>
+        <ul>
+          <li>16MB document size limit — a few HD images fill that</li>
+          <li>Cloudinary = CDN, serves from nearest edge server globally</li>
+          <li>Base64 encoding adds ~33% size overhead</li>
+          <li>That's why <code>express.json({ limit: '15mb' })</code> — to handle base64 bodies</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 12. UNSEEN MESSAGES                                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="good" data-category="feature">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">12</span>
+          <div>
+            <div class="card-title">Unseen Messages Badge Counter Flow</div>
+            <div class="card-subtitle">Q: "How does the unread message count work?"</div>
+          </div>
+        </div>
+        <span class="priority-badge good">🟢 Good to Know</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart TD
+    A["socket.on('newMessage', msg)"] --> B{"msg.senderId ===<br/>selectedUser._id?"}
+
+    B -->|"YES (chat open)"| C["setMessages(<br/>prev => [...prev, msg])"]
+    C --> D["axios markSeen(msg._id)"]
+    D --> E["Message visible<br/>No badge"]
+
+    B -->|"NO (different chat)"| F["setUnseenMessages(<br/>prev[senderId] + 1)"]
+    F --> G["Badge shows count<br/>next to sender name"]
+
+    H["User clicks sender<br/>in sidebar"] --> I["setSelectedUser(sender)"]
+    I --> J["unseenMessages[id] = 0"]
+    J --> K["getMessages(sender._id)"]
+    K --> L["Server: updateMany<br/>seen: true"]
+    L --> M["Badge resets<br/>All seen"]
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>Two Paths</h4>
+        <p>If the sender's chat is already open → message goes directly into the conversation and gets marked seen. If user is chatting with someone else → counter increments and badge shows. Clicking the user resets badge and marks all messages seen in DB.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 13. HTTP vs WEBSOCKET                                      -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="good" data-category="arch">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">13</span>
+          <div>
+            <div class="card-title">HTTP vs WebSocket — Side by Side</div>
+            <div class="card-subtitle">Q: "Why use WebSocket? Why not just HTTP polling?"</div>
+          </div>
+        </div>
+        <span class="priority-badge good">🟢 Good to Know</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+sequenceDiagram
+    rect rgba(220, 38, 38, 0.08)
+    Note over Client,Server: HTTP (Pull-based, stateless)
+    Client->>Server: GET /messages (new data?)
+    Server-->>Client: Response (connection closes)
+    Note over Client: Wait 2 seconds...
+    Client->>Server: GET /messages (new data?)
+    Server-->>Client: Response (connection closes)
+    Note over Client: Repeat forever = POLLING
+    end
+
+    rect rgba(5, 150, 105, 0.1)
+    Note over Client,Server: WebSocket (Push-based, persistent)
+    Client->>Server: HTTP Upgrade Request
+    Server-->>Client: 101 Switching Protocols
+    Note over Client,Server: Connection stays OPEN
+    Server-->>Client: push "newMessage" (instant!)
+    Client->>Server: emit "typing" (instant!)
+    Server-->>Client: push "getOnlineUsers" (instant!)
+    Note over Client,Server: Until disconnect
+    end
+        </pre>
+      </div>
+      <div class="card-footer">
+        <table>
+          <tr><th></th><th>HTTP</th><th>WebSocket</th></tr>
+          <tr><td>Connection</td><td>Opens + closes per request</td><td>Stays open</td></tr>
+          <tr><td>Direction</td><td>Client → Server only</td><td>Bidirectional</td></tr>
+          <tr><td>Server push?</td><td>❌ No (must poll)</td><td>✅ Yes (instant)</td></tr>
+          <tr><td>In this app</td><td>Login, send message, fetch data</td><td>newMessage, typing, onlineUsers</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 14. ZOD VALIDATION                                         -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="good" data-category="arch">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">14</span>
+          <div>
+            <div class="card-title">Zod Server-Side Validation Pipeline</div>
+            <div class="card-subtitle">Q: "How do you validate user input on the server?"</div>
+          </div>
+        </div>
+        <span class="priority-badge good">🟢 Good to Know</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart TD
+    A["POST /api/auth/signup<br/>{email, fullName, password, bio}"] --> B["Express: req.body"]
+    B --> C["signupSchema.safeParse(req.body)"]
+    C --> D{"result.success?"}
+
+    D -->|"Invalid"| E["Return error:<br/>result.error.errors[0].message"]
+    E --> F["Example:<br/>'Password must be at least 6 characters'"]
+
+    D -->|"Valid"| G["Destructure validated data:<br/>{fullName, email, password, bio}<br/>= result.data"]
+    G --> H["Check email uniqueness"]
+    H --> I["bcrypt.hash(password)"]
+    I --> J["User.create() in MongoDB"]
+    J --> K["Generate JWT"]
+    K --> L["Response: {token, userData}"]
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>Why <code>safeParse</code> not <code>parse</code>?</h4>
+        <p><code>parse()</code> throws a ZodError → needs try-catch. <code>safeParse()</code> returns <code>{success, data, error}</code> → cleaner control flow, no exceptions for expected invalid input.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 15. SCALABILITY                                            -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="diagram-card" data-priority="good" data-category="scale">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="card-num">15</span>
+          <div>
+            <div class="card-title">Scalability — What Changes at 100K Users</div>
+            <div class="card-subtitle">Q: "How would you scale this app for production?"</div>
+          </div>
+        </div>
+        <span class="priority-badge good">🟢 Good to Know</span>
+      </div>
+      <div class="card-body">
+        <pre class="mermaid">
+flowchart TB
+    subgraph NOW["Current - Single Server"]
+        direction LR
+        C1["React SPA"] --> C2["Express +<br/>Socket.IO"]
+        C2 --> C3[("MongoDB Atlas")]
+        C2 --> C4["userSocketMap<br/>(JS object in memory)"]
+    end
+
+    subgraph PROD["Scaled - Production"]
+        direction TB
+        LB["Load Balancer<br/>nginx / ALB<br/>sticky sessions"]
+
+        LB --> S1["Server 1"]
+        LB --> S2["Server 2"]
+        LB --> S3["Server N"]
+
+        REDIS["Redis<br/>Socket.IO Adapter<br/>+ Session Store<br/>+ Rate Limiter"]
+        DB_S[("MongoDB<br/>Sharded + Replicas<br/>+ Indexes")]
+        CDN_S["Cloudinary CDN<br/>(already scaled)"]
+
+        S1 --> REDIS
+        S2 --> REDIS
+        S3 --> REDIS
+        S1 --> DB_S
+        S2 --> DB_S
+        S1 --> CDN_S
+    end
+
+    NOW -->|"What changes?"| PROD
+        </pre>
+      </div>
+      <div class="card-footer">
+        <h4>What Breaks at Scale & How to Fix It</h4>
+        <table>
+          <tr><th>Problem</th><th>Current</th><th>At Scale</th></tr>
+          <tr><td>Socket routing</td><td>In-memory <code>userSocketMap</code></td><td>Redis — shared across servers</td></tr>
+          <tr><td>Cross-server events</td><td>N/A (single server)</td><td>Socket.IO Redis Adapter</td></tr>
+          <tr><td>Rate limiting</td><td>None</td><td>Redis fixed-window counter</td></tr>
+          <tr><td>DB reads</td><td>Single Atlas cluster</td><td>Read replicas + indexes</td></tr>
+          <tr><td>Sessions</td><td>JWT + localStorage</td><td>Same — JWT is already stateless!</td></tr>
+          <tr><td>Images</td><td>Cloudinary CDN</td><td>No change needed — already CDN</td></tr>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>ChatApp — 15 Must-Know Interview Diagrams • <a href="https://github.com/HxWildE/ChatApp">HxWildE/ChatApp</a> • August 2026</p>
+    <p style="margin-top:0.5rem;font-size:0.8rem;color:#475569">Roz dekho, roz draw karo. Interview mein hero bano. 🚀</p>
+  </footer>
+
+  <script>
+    function filterDiagrams(filter) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      document.querySelectorAll('.diagram-card').forEach(card => {
+        const priority = card.dataset.priority;
+        const category = card.dataset.category;
+        let show = false;
+
+        if (filter === 'all') show = true;
+        else if (filter === 'must' || filter === 'high' || filter === 'good') show = (priority === filter);
+        else show = (category === filter);
+
+        card.style.display = show ? 'block' : 'none';
+      });
+    }
+  </script>
+
+</body>
+</html>
+

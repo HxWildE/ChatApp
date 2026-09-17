@@ -14,8 +14,3 @@ build/
 auto_pusher.log
 auto_pusher.ps1
 
-*.txt
-PROJECTREAD/
-
-extraQuestions/
-interviewFinAL/
