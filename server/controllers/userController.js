@@ -1,20 +1,8 @@
-import { generateToken } from '../lib/utils.js';
-import cloudinary from '../lib/cloudinary.js';
+import { generateToken } from '../utils/jwt.js';
+import cloudinary from '../config/cloudinary.js';
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
-import { z } from 'zod';
-
-const signupSchema = z.object({
-  fullName: z.string().min(1, 'Full name is required'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  bio: z.string().min(1, 'Bio is required')
-});
-
-const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required')
-});
+import { signupSchema, loginSchema } from '../schemas/userSchema.js';
 
 export const signup = async (req, res) => {
   try {
@@ -47,11 +35,11 @@ export const signup = async (req, res) => {
       bio
     });
 
-    const token = generateToken(newUser._id);
+    generateToken(newUser._id, res);
+    
     res.json({
       success: true,
       userData: newUser,
-      token,
       message: 'Account Created Successfully '
     });
   } catch (error) {
@@ -90,16 +78,26 @@ export const login = async (req, res) => {
       });
     }
 
-    const token = generateToken(userData._id);
+    generateToken(userData._id, res);
+
     res.json({
       success: true,
       userData,
-      token,
       message: 'Login Successful'
     });
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });
+  }
+};
+
+export const logout = (req, res) => {
+  try {
+    res.cookie('jwt', '', { maxAge: 0 });
+    res.json({ success: true, message: 'Logged out successfully' });
+  } catch (error) {
+    console.log(error.message);
+    res.json({ success: false, message: 'Server error' });
   }
 };
 
