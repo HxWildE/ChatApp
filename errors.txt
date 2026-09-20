@@ -1,9 +1,0 @@
-chat section me send div and rightsidebar mein logout button 
-bahaar jaa rha than main chat app screen section
-in homepage
-GOOTAA FIX THAAT
- 
-orientation and size of signup form [doesnt look nice]
-chat icon is really niche change it 
-
-working NOT SIGNUP/LOGIN BUTTON 
