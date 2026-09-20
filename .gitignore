@@ -14,3 +14,10 @@ build/
 auto_pusher.log
 auto_pusher.ps1
 
+# Documentation and Learning Folders (Local only)
+PROJECTREAD/
+docs/
+extraQuestions/
+interviewFinAL/
+errors.txt
+naive.md
