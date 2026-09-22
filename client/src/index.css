@@ -1,18 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100..900&family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
 @import "tailwindcss";
-
-*{
-     font-family: "Outfit", sans-serif;
-}
 
 html, body, #root {
   min-height: 100%;
 }
 
 body {
-  background: #000000;
-  color: #e4e4e7;
+  background: theme('colors.slate.950');
+  color: theme('colors.slate.200');
 }
 
 ::selection {
@@ -20,8 +16,8 @@ body {
 }
 
 .glass-panel {
-  background: #09090b;
-  border: 1px solid #27272a;
+  background: theme('colors.slate.900');
+  border: 1px solid theme('colors.slate.800');
 }
 
 .group:hover .group-hover-dropdown,

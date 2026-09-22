@@ -13,8 +13,8 @@ const RightSidebar = () => {
   const msgImages = messages.filter(msg => msg.image).map(msg => msg.image)
 
   return selectedUser ? (
-    <div className={`bg-[#09090b] border-l border-[#27272a] text-[#e4e4e7] w-full relative overflow-y-scroll
-    ${selectedUser ? "max-md:hidden" : ""}`}>
+    <div className={`bg-slate-900 border-l border-slate-800 text-slate-200 w-full relative overflow-y-scroll
+    hidden lg:block`}>
      
       <div className='pt-16 flex flex-col items-center gap-2 text-xs font-light mx-auto'>
           <img src={selectedUser?.profilePic || assets.avatar_icon} alt="" className='w-20 aspect-[1/1] rounded-full'/>
@@ -25,7 +25,7 @@ const RightSidebar = () => {
           <p className='px-10 mx-auto'> {selectedUser.bio} </p>
       </div>
 
-      <hr className="border-[#ffffff50]"/>
+      <hr className="border-slate-800/80 my-4 mx-6"/>
 
       <div className="px-5 test-xs">
         <p>Media</p>
@@ -40,8 +40,8 @@ const RightSidebar = () => {
           ))}
         </div>
       </div>
-      <button onClick={() => logout()} className='absolute bottom-3 left-1/2 
-      transform -translate-x-1/2 bg-[#fafafa] hover:bg-[#e4e4e7] transition-colors text-black font-medium py-2 px-20 rounded-lg cursor-pointer'>
+      <button onClick={() => logout()} className='absolute bottom-6 left-1/2 
+      transform -translate-x-1/2 bg-blue-600 hover:bg-blue-700 transition-colors text-white font-medium py-2 px-12 rounded-xl cursor-pointer w-3/4'>
             Logout
       </button>
     </div>

@@ -100,21 +100,21 @@ const ChatContainer = () => {
 
   useEffect(()=>{
   if(scrollEnd.current){
-      scrollEnd.current?.scrollIntoView({behavior:'smooth'})
+      scrollEnd.current?.scrollIntoView({behavior:'auto'})
    } 
 },[messages, isTyping]);
  
   return selectedUser ? (
-    <div className='relative h-full flex flex-col'>
-      <div className = 'flex items-center gap-3 py-4 mx-4 border-b border-stone-500'>
+    <div className='relative h-full flex flex-col min-h-0 min-w-0'>
+      <div className = 'flex items-center gap-3 py-4 mx-4 border-b border-slate-800'>
       
         <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className="w-8 h-8 rounded-full object-cover"/>
-        <p className='flex-1 text-lg text-[#e4e4e7] flex items-center gap-2'>
+        <p className='flex-1 text-lg text-slate-100 flex items-center gap-2'>
          {selectedUser.fullName}
          {isTyping ? (
-           <span className="text-xs text-zinc-400 font-medium animate-pulse">typing...</span>
+           <span className="text-xs text-blue-400 font-medium animate-pulse">typing...</span>
          ) : (
-           onlineUsers.includes(String(selectedUser._id)) && <span className = "w-2.5 h-2.5 rounded-full bg-green-500 shadow-sm" title="Online"></span>
+           onlineUsers.includes(String(selectedUser._id)) && <span className = "w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm" title="Online"></span>
          )}
         </p>
 
@@ -127,35 +127,40 @@ const ChatContainer = () => {
 
       {/*chat area*/}
 
-      <div className='flex-1 overflow-y-scroll p-3 pb-24'>
+      <div className='flex-1 overflow-y-scroll p-3'>
         
         { messages.map((msg,index)=>(
-          <div key={index} className={`flex items-end gap-2 justify-end mb-6
-          ${msg.senderId !== authUser._id && 'flex-row-reverse'}`}>
-
-            { msg.image ? (
-     <img src={msg.image} alt="" 
-          className="max-w-[230px] border border-gray-700 rounded-lg overflow-hidden"/>
-            ) : (
-      <p className={`py-2 px-3 max-w-[200px] md:text-sm font-light break-all shadow-sm
-          ${msg.senderId === authUser._id 
-            ? 'bg-emerald-600 text-white border border-emerald-500 rounded-xl rounded-br-sm' 
-            : 'bg-orange-500 border border-orange-400 text-white rounded-xl rounded-bl-sm'}`}>
-               {msg.text} </p>
+          <div key={index} className={`flex items-end gap-2 mb-2 ${msg.senderId === authUser._id ? 'justify-end' : 'justify-start'}`}>
+            
+            {msg.senderId !== authUser._id && (
+               <img src={selectedUser?.profilePic || assets.avatar_icon} alt="" className='w-7 h-7 rounded-full object-cover flex-shrink-0 mb-1'/>
             )}
 
-            <div className = "text-center text-xs">
-              <img src={ msg.senderId === authUser._id ? (authUser?.profilePic || assets.avatar_icon) : (selectedUser?.profilePic || assets.avatar_icon)} alt ="" className='w-7 h-7 rounded-full object-cover'/>
-              <p className = 'text-gray-500'>{formatMessageTime(msg.createdAt)} </p>             
-              </div>
+            <div className={`flex flex-col gap-1 max-w-[75%] ${msg.senderId === authUser._id ? 'items-end' : 'items-start'}`}>
+              { msg.image ? (
+                <img src={msg.image} alt="" className="max-w-[250px] rounded-lg overflow-hidden shadow-sm"/>
+              ) : (
+                <p className={`py-[6px] px-3.5 md:text-sm font-normal break-words whitespace-pre-wrap
+                  ${msg.senderId === authUser._id 
+                    ? 'bg-blue-600 text-white rounded-2xl rounded-br-sm' 
+                    : 'bg-[#27272a] text-zinc-100 rounded-2xl rounded-bl-sm'}`}>
+                  {msg.text}
+                </p>
+              )}
+              <span className='text-[10px] text-slate-500 font-medium'>{formatMessageTime(msg.createdAt)}</span>
+            </div>
+
+            {msg.senderId === authUser._id && (
+               <img src={authUser?.profilePic || assets.avatar_icon} alt="" className='w-7 h-7 rounded-full object-cover flex-shrink-0 mb-1'/>
+            )}
 
           </div>
       ))}
 
       {isTyping && (
-        <div className='flex items-center gap-2 justify-start mb-4 pl-1'>
-          <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-6 h-6 rounded-full object-cover'/>
-          <div className='bg-[#18181b] text-zinc-400 px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 border border-[#27272a]'>
+        <div className='flex items-center gap-2 justify-start mb-2 pl-1'>
+          <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-7 h-7 rounded-full object-cover mb-1'/>
+          <div className='bg-[#27272a] text-zinc-400 px-4 py-2 rounded-2xl rounded-bl-sm text-xs flex items-center gap-1'>
             <span>typing</span>
             <span className='animate-pulse'>...</span>
           </div>
@@ -166,29 +171,31 @@ const ChatContainer = () => {
     </div>
 
 {/* bottomarea */}
-    <div className='flex items-center gap-3 p-3 border-t border-[#27272a] bg-[#09090b]'>
-      <div className='flex-1 flex items-center bg-[#18181b] px-3 rounded-lg border border-[#27272a]'>  
+    <div className='flex items-center gap-2 p-3 bg-slate-900'>
+      <div className='flex-1 flex items-center bg-[#18181b] px-4 rounded-full focus-within:ring-1 focus-within:ring-blue-500 transition-shadow'>  
         
         <input onChange={handleInputChange} value={input}
         onKeyDown={(e) => e.key === "Enter" ? handleSendMessage(e) : null}
-        type="text" placeholder='Type a message'
-          className='flex-1 text-sm p-3 border-none rounded-lg text-white 
-          placeholder-gray-400 outline-none bg-transparent'/>
+        type="text" placeholder='Type a message...'
+          className='flex-1 text-sm py-2.5 px-1 border-none bg-transparent text-slate-100 
+          placeholder-slate-500 outline-none font-normal'/>
         <input onChange={handleSendImage} type="file" id='image' accept='image/png,image/jpeg' hidden />
-        <label htmlFor="image">
-          <img src={assets.gallery_icon} alt="" className="w-5 mr-2 cursor-pointer"/>
+        <label htmlFor="image" className="hover:opacity-80 transition-opacity">
+          <img src={assets.gallery_icon} alt="Upload" className="w-5 cursor-pointer opacity-70 hover:opacity-100"/>
         </label>
       </div>
-      <img onClick={handleSendMessage} src={assets.send_button} alt="" className="w-10 cursor-pointer" />
+      <button onClick={handleSendMessage} className="p-2.5 bg-black hover:bg-[#111] border border-slate-800 transition-colors rounded-full flex items-center justify-center flex-shrink-0 group">
+         <img src={assets.send_button} alt="Send" className="w-5 h-5 invert sepia saturate-[3] hue-rotate-[60deg] opacity-90 group-hover:opacity-100 transition-opacity" />
+      </button>
     </div>
   </div>
 
   ) : (
-   <div className='flex flex-col items-center  justify-center
-   h-full gap-2 text-gray-500  bg-[#000000] max-md:hidden'>
+   <div className='flex flex-col items-center justify-center
+   h-full gap-2 text-slate-500 bg-slate-950 max-md:hidden'>
         <input onChange={handleSendImage} type="file" id='image' accept='image/png,image/jpeg' hidden />
-  <p className='text-lg font-medium text-white'>
-       Chat Anytime , Anywhere </p>
+  <p className='text-lg font-medium text-slate-300 tracking-wide'>
+       Chat Anytime, Anywhere </p>
   </div>
 
   )
