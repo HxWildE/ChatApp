@@ -54,12 +54,12 @@ ChatApp provides a seamless communication experience built on a responsive dark 
 ## ✨ Features
 
 - ⚡ **Real-Time Messaging**: Built on **Socket.IO** for instant, bi-directional message delivery with zero page refreshes.
-- 🟢 **Online Presence Tracking**: Live user status updates dynamically reflecting connected and disconnected users.
-- ✍️ **Typing Indicators**: Real-time notification when the peer in conversation is actively composing a message.
-- 🔐 **Secure Authentication**: User sign-up and login with password hashing via **bcryptjs** and session security using **JWT**.
+- 🟢 **Online Presence & Typing Indicators**: Live user status updates and real-time notification when a peer is composing a message.
+- 🎨 **Premium "Big Tech" UI**: A hyper-polished, responsive dark mode aesthetic featuring sleek minimalist chat bubbles, edge-to-edge sidebar lists, and fluid transitions.
+- 🔤 **Dynamic Font Switcher**: Built-in settings module to toggle instantly between premium UI fonts (Inter, Roboto, Poppins, System) via a global Theme Context.
+- 🔐 **Secure Authentication & Rate Limiting**: User sign-up/login with **bcryptjs**, **JWT** sessions, and robust backend protection using **express-rate-limit** and dynamic CORS.
 - 🛡️ **Strict Schema Validation**: End-to-end payload validation powered by **Zod** across authentication and messaging endpoints.
-- 🖼️ **Media Attachments**: Profile pictures and media uploads handled seamlessly with **Cloudinary** cloud storage.
-- 🎨 **Modern Dark-Mode UI**: Built with **React 19**, **Vite**, and **Tailwind CSS v4** featuring toast notifications via `react-hot-toast`.
+- 🖼️ **Cloud Media Attachments**: Profile pictures and media uploads handled seamlessly with **Cloudinary**.
 
 ---
 
