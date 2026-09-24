@@ -38,7 +38,7 @@ const onSubmitHandler = async (event)=>{
     justify-center gap-8 sm:justify-evenly max-sm:flex-col'>
 
 {/* left */}
-<img src={assets.logo_big} alt="Logo" className='w-40 md:w-48 rounded-3xl shadow-2xl object-cover'/>
+<img src={assets.logo_big} alt="Logo" className='w-56 md:w-80 lg:w-96 rounded-3xl shadow-2xl object-cover'/>
 
 {/* right  */}
 <form onSubmit={onSubmitHandler}
