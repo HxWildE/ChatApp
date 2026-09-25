@@ -8,7 +8,7 @@ export const signup = async (req, res) => {
   try {
     const validatedData = signupSchema.safeParse(req.body);
     if (!validatedData.success) {
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: validatedData.error.errors[0].message
       });
@@ -19,7 +19,7 @@ export const signup = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user) {
-      return res.json({
+      return res.status(409).json({
         success: false,
         message: 'Account Already exists '
       });
@@ -37,14 +37,14 @@ export const signup = async (req, res) => {
 
     generateToken(newUser._id, res);
     
-    res.json({
+    res.status(201).json({
       success: true,
       userData: newUser,
       message: 'Account Created Successfully '
     });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -52,7 +52,7 @@ export const login = async (req, res) => {
   try {
     const validatedData = loginSchema.safeParse(req.body);
     if (!validatedData.success) {
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: validatedData.error.errors[0].message
       });
@@ -63,7 +63,7 @@ export const login = async (req, res) => {
     const userData = await User.findOne({ email });
 
     if (!userData) {
-      return res.json({
+      return res.status(401).json({
         success: false,
         message: 'Invalid Credentials'
       });
@@ -72,7 +72,7 @@ export const login = async (req, res) => {
     const isPasswordCorrect = await bcrypt.compare(password, userData.password);
 
     if (!isPasswordCorrect) {
-      return res.json({
+      return res.status(401).json({
         success: false,
         message: 'Invalid Credentials'
       });
@@ -80,29 +80,29 @@ export const login = async (req, res) => {
 
     generateToken(userData._id, res);
 
-    res.json({
+    res.status(200).json({
       success: true,
       userData,
       message: 'Login Successful'
     });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const logout = (req, res) => {
   try {
     res.cookie('jwt', '', { maxAge: 0 });
-    res.json({ success: true, message: 'Logged out successfully' });
+    res.status(200).json({ success: true, message: 'Logged out successfully' });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: 'Server error' });
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
 export const checkAuth = (req, res) => {
-  res.json({ success: true, user: req.user });
+  res.status(200).json({ success: true, user: req.user });
 };
 
 export const updateProfile = async (req, res) => {
@@ -121,9 +121,9 @@ export const updateProfile = async (req, res) => {
 
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
 
-    res.json({ success: true, user: updatedUser, message: 'Profile updated successfully' });
+    res.status(200).json({ success: true, user: updatedUser, message: 'Profile updated successfully' });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };

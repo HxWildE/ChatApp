@@ -22,14 +22,14 @@ export const getUsersForSidebar = async (req, res) => {
     });
 
     await Promise.all(promises);
-    res.json({
+    res.status(200).json({
       success: true,
       users: filteredUsers,
       unseenMessages
     });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 }
 
@@ -50,10 +50,10 @@ export const getMessages = async (req, res) => {
       { seen: true }
     );
 
-    res.json({ success: true, messages });
+    res.status(200).json({ success: true, messages });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 }
 
@@ -61,10 +61,10 @@ export const markMessagesAsSeen = async (req, res) => {
   try {
     const { id } = req.params;
     await Message.findByIdAndUpdate(id, { seen: true });
-    res.json({ success: true });
+    res.status(200).json({ success: true });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 }
 
@@ -92,10 +92,10 @@ export const sendMessage = async (req,res) =>{
         io.to(receiverSocketId).emit("newMessage" , newMessage);
       } 
 
-  res.json({success : true , newMessage})
+  res.status(201).json({success : true , newMessage})
 
     }catch(error){
   console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
     }
 }
