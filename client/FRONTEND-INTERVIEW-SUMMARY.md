@@ -1,4 +1,4 @@
-# ChatApp Frontend Interview Summary
+# NEXUS Frontend Interview Summary
 
 ## Important points for interview
 
@@ -31,7 +31,7 @@
 
 ## Presentable explanation
 
-“Ye ek Full Stack Chat App ka frontend hai jo React, Tailwind aur Vite par bana hai. Isme main focus state management aur real-time data handling par hai. Maine Context API ka use karke Auth aur Chat data ko globally manage kiya hai. Backend se communication ke liye Axios (REST APIs) aur real-time messaging/online-status ke liye Socket.io use kiya gaya hai. Components bohot modular hain aur UI fully responsive hai.”
+“Ye ek Full Stack NEXUS ka frontend hai jo React, Tailwind aur Vite par bana hai. Isme main focus state management aur real-time data handling par hai. Maine Context API ka use karke Auth aur Chat data ko globally manage kiya hai. Backend se communication ke liye Axios (REST APIs) aur real-time messaging/online-status ke liye Socket.io use kiya gaya hai. Components bohot modular hain aur UI fully responsive hai.”
 
 ## Quick cheat sheet
 

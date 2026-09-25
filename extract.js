@@ -4,5 +4,5 @@ const lines = transcript.split('\n');
 const firstLine = JSON.parse(lines[0]);
 const content = firstLine.content;
 const texContent = content.substring(content.indexOf('%-------------------------'), content.indexOf('\\end{document}') + 14);
-fs.writeFileSync('c:\\Users\\harsh\\OneDrive\\Documents\\Desktop\\chatapp\\resume.tex', texContent);
+fs.writeFileSync('c:\\Users\\harsh\\OneDrive\\Documents\\Desktop\\nexus\\resume.tex', texContent);
 console.log('Done writing resume.tex');

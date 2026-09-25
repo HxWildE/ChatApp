@@ -1,4 +1,4 @@
-# ChatApp Frontend Explained (Full Stack Version)
+# NEXUS Frontend Explained (Full Stack Version)
 
 ## 1. Project Overview
 

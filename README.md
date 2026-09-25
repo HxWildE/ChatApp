@@ -1,6 +1,6 @@
 <div align="center">
 
-  # 💬 ChatApp — Real-Time Full-Stack Messaging Platform
+  # 💬 NEXUS — Real-Time Full-Stack Messaging Platform
 
   <p align="center">
     <b>A modern, high-performance, full-stack real-time messaging application with instant status updates, typing indicators, secure authentication, and cloud media attachments.</b>
@@ -33,11 +33,11 @@
 
 ## 📸 Overview & UI Preview
 
-ChatApp provides a seamless communication experience built on a responsive dark UI. Users can register accounts, update profile avatars, send real-time text and media messages, and observe online presence alongside typing status updates in real-time.
+NEXUS provides a seamless communication experience built on a responsive dark UI. Users can register accounts, update profile avatars, send real-time text and media messages, and observe online presence alongside typing status updates in real-time.
 
 ```
 +-----------------------------------------------------------------------------------+
-|  ChatApp UI Layout                                                                |
+|  NEXUS UI Layout                                                                |
 +------------------------------------+----------------------------------------------+
 | [Users & Online Status Sidebar]    | [Active Chat Room Header]                   |
 | 🟢 Alice (Online - Typing...)     | 💬 Alice (Online)                            |
@@ -123,7 +123,7 @@ sequenceDiagram
 ## 📁 Repository Structure
 
 ```
-chatapp/
+nexus/
 ├── client/                     # React 19 + Vite Frontend Application
 │   ├── src/
 │   │   ├── components/         # Chat Sidebar, Message View, Navbar & Modals
@@ -164,8 +164,8 @@ Make sure you have the following installed on your development machine:
 
 #### 1. Clone the repository
 ```bash
-git clone https://github.com/HxWildE/ChatApp.git
-cd ChatApp
+git clone https://github.com/HxWildE/NEXUS.git
+cd NEXUS
 ```
 
 #### 2. Configure Backend (`/server`)
@@ -179,7 +179,7 @@ npm install
 Create a `.env` file inside the `server/` directory:
 ```env
 PORT=5000
-MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/chatapp?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/nexus?retryWrites=true&w=majority
 JWT_SECRET=your_super_secret_jwt_key_here
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
@@ -252,7 +252,7 @@ npm run dev
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!  
-Feel free to check out the [issues page](https://github.com/HxWildE/ChatApp/issues).
+Feel free to check out the [issues page](https://github.com/HxWildE/NEXUS/issues).
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)

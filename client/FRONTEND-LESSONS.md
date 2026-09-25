@@ -1,4 +1,4 @@
-# ChatApp Frontend Lessons (Full Stack Updates)
+# NEXUS Frontend Lessons (Full Stack Updates)
 
 ## Lesson 1: Real-World Architecture
 React app ka structure ab scalable ban gaya hai.
