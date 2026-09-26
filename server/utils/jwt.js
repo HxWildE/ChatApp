@@ -8,8 +8,8 @@ export const generateToken = (userId, res) => {
   res.cookie('jwt', token, {
     maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days in MS
     httpOnly: true, // prevent XSS attacks
-   sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-   secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+    secure: process.env.NODE_ENV === 'production',
  });
 
   return token;
