@@ -18,6 +18,9 @@ const ChatContainer = () => {
 
  const [input , setInput] = useState('');
  const [isTyping, setIsTyping] = useState(false);
+ const [page, setPage] = useState(1);
+ const [hasMore, setHasMore] = useState(false);
+ const [isLoadingOlder, setIsLoadingOlder] = useState(false);
 
  const handleInputChange = (e) => {
   const value = e.target.value;
@@ -69,10 +72,25 @@ const ChatContainer = () => {
 
   useEffect(() => {
       if(selectedUser){
-        getMessages(selectedUser._id);
+        setPage(1);
+        setHasMore(false);
+        getMessages(selectedUser._id, 1).then(pagination => {
+          if (pagination) setHasMore(pagination.hasMore);
+        });
         setIsTyping(false);
       }
   },[selectedUser])
+
+  const handleLoadOlder = async () => {
+    setIsLoadingOlder(true);
+    const nextPage = page + 1;
+    const pagination = await getMessages(selectedUser._id, nextPage);
+    if (pagination) {
+        setPage(pagination.page);
+        setHasMore(pagination.hasMore);
+    }
+    setIsLoadingOlder(false);
+  };
 
   useEffect(() => {
     if (!socket || !selectedUser) return;
@@ -128,6 +146,17 @@ const ChatContainer = () => {
       {/*chat area*/}
 
       <div className='flex-1 overflow-y-scroll p-3'>
+        {hasMore && (
+          <div className="flex justify-center my-4">
+            <button 
+              onClick={handleLoadOlder}
+              disabled={isLoadingOlder}
+              className="text-xs bg-slate-800 text-slate-300 py-1.5 px-4 rounded-full hover:bg-slate-700 disabled:opacity-50 transition-colors shadow-sm"
+            >
+              {isLoadingOlder ? "Loading..." : "Load Older Messages"}
+            </button>
+          </div>
+        )}
         
         { messages.map((msg,index)=>(
           <div key={index} className={`flex items-end gap-2 mb-2 ${msg.senderId === authUser._id ? 'justify-end' : 'justify-start'}`}>

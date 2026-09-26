@@ -5,12 +5,19 @@ import rateLimit from 'express-rate-limit';
 import messageRouter from './routes/messageRoutes.js';
 import userRouter from './routes/userRoutes.js';
 
+const clientUrl = process.env.CLIENT_URL;
 const app = express();
-
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow any localhost origin (like 5003, 5173) or allow undefined (like Postman)
-    if (!origin || origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+    const allowedOrigins = [
+      clientUrl,
+      'http://localhost:5173',
+      'http://localhost:5003',
+      'http://127.0.0.1:5173',
+      'http://127.0.0.1:5003'
+    ];
+
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));

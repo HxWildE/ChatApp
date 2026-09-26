@@ -27,15 +27,24 @@ export const ChatProvider = ({ children}) =>{
         }
     }
 
-        //fucntion to getMessages fr selected user
-    const getMessages = async (userId) =>{
+    const getMessages = async (userId, page = 1) =>{
         try{
-            const {data} = await axios.get(`/api/messages/${userId}`);
+            const {data} = await axios.get(`/api/messages/${userId}?page=${page}&limit=20`);
               if(data.success){
-                setMessages(data.messages)
+                if (page === 1) {
+                    setMessages(data.messages);
+                } else {
+                    setMessages(prev => {
+                        const existingIds = new Set(prev.map(m => m._id));
+                        const newMessages = data.messages.filter(m => !existingIds.has(m._id));
+                        return [...newMessages, ...prev]; // Prepend older messages
+                    });
+                }
+                return data.pagination;
             }
         }catch(error){
             toast.error(error.message)
+            return null;
         }
     }
 

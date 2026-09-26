@@ -38,19 +38,44 @@ export const getMessages = async (req, res) => {
     const selectedUserId = req.params.id;
     const myId = req.user._id;
 
+    // Pagination Parameters
+    let page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 20;
+
+    if (page < 1) page = 1;
+    if (limit < 1) limit = 20;
+    if (limit > 50) limit = 50; // Prevent abusive limits
+
+    const skip = (page - 1) * limit;
+
     const messages = await Message.find({
       $or: [
         { senderId: myId, receiverId: selectedUserId },
         { senderId: selectedUserId, receiverId: myId }
       ]
-    });
+    })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
+    // Messages are fetched newest first (descending), reverse them for chronological UI rendering
+    const chronologicalMessages = messages.reverse();
+
+    // Mark retrieved unseen messages as seen
     await Message.updateMany(
-      { senderId: selectedUserId, receiverId: myId },
+      { senderId: selectedUserId, receiverId: myId, seen: false },
       { seen: true }
     );
 
-    res.status(200).json({ success: true, messages });
+    res.status(200).json({ 
+      success: true, 
+      messages: chronologicalMessages,
+      pagination: {
+        page,
+        limit,
+        hasMore: messages.length === limit
+      }
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ success: false, message: error.message });
