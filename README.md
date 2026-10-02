@@ -105,7 +105,7 @@ sequenceDiagram
     Express-->>Client: Updated User Profile
 
     %% Real-time Socket Communication
-    Client->>Socket: Connect (query: userId)
+    Client->>Socket: Connect (Secure JWT Cookie)
     Socket->>Socket: Map socket.id -> userId
     Socket-->>Client: Broadcast "getOnlineUsers" Event
 
@@ -140,10 +140,15 @@ nexus/
 │   ├── middleware/             # Auth middleware & Zod validation
 │   ├── models/                 # Mongoose User & Message schemas
 │   ├── routes/                 # Express API router definitions
-│   ├── server.js               # Express app & Socket.IO server initialization
+│   ├── socket/                 # Socket.io connection & auth logic
+│   ├── server.js               # Express app initialization
 │   └── package.json
 │
-└── docs/                       # Architecture notes & API documentation
+├── PROJECTREAD/                # Massive 17-part Architectural Documentation
+│
+├── interviewFinAL/             # ~230+ Deep Dive Technical Interview Questions
+│
+└── docs/                       # Daily progress logs and legacy docs
 ```
 
 ---
@@ -240,7 +245,7 @@ npm run dev
 
 | Event Name | Direction | Payload | Description |
 | :--- | :--- | :--- | :--- |
-| `connection` | Client ➔ Server | `query: { userId }` | Registers user socket connection |
+| `connection` | Client ➔ Server | `Cookie: jwt=token` | Authenticates via `io.use()` and registers socket |
 | `getOnlineUsers` | Server ➔ Client | `Array<string>` | Emits array of currently active user IDs |
 | `typing` | Client ➔ Server ➔ Peer | `{ receiverId }` | Triggers active typing indicator on recipient's UI |
 | `stopTyping` | Client ➔ Server ➔ Peer | `{ receiverId }` | Clears active typing indicator on recipient's UI |

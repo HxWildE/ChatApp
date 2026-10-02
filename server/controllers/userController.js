@@ -2,19 +2,10 @@ import { generateToken } from '../utils/jwt.js';
 import cloudinary from '../config/cloudinary.js';
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
-import { signupSchema, loginSchema } from '../schemas/userSchema.js';
 
 export const signup = async (req, res) => {
   try {
-    const validatedData = signupSchema.safeParse(req.body);
-    if (!validatedData.success) {
-      return res.status(400).json({
-        success: false,
-        message: validatedData.error.errors[0].message
-      });
-    }
-
-    const { fullName, email, password, bio } = validatedData.data;
+    const { fullName, email, password, bio } = req.body;
 
     const user = await User.findOne({ email });
 
@@ -50,15 +41,7 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const validatedData = loginSchema.safeParse(req.body);
-    if (!validatedData.success) {
-      return res.status(400).json({
-        success: false,
-        message: validatedData.error.errors[0].message
-      });
-    }
-
-    const { email, password } = validatedData.data;
+    const { email, password } = req.body;
     
     const userData = await User.findOne({ email });
 
