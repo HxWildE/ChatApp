@@ -3,7 +3,8 @@
   # 💬 NEXUS — Real-Time Full-Stack Messaging Platform
 
   <p align="center">
-    <b>A modern, high-performance, full-stack real-time messaging application with instant status updates, typing indicators, secure authentication, and cloud media attachments.</b>
+    <b>A modern, high-performance, full-stack real-time messaging application with instant status updates, typing indicators, secure authentication, and cloud media attachments.</b><br/><br/>
+    <i>🚀 Actively maintained and upgraded with advanced system design concepts for backend engineering interviews.</i>
   </p>
 
   <p align="center">
