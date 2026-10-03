@@ -26,7 +26,7 @@
 
 ## Bugs / limitations ya discuss karne layak
 
-- Security ke liye JWT tokens aur unki storage (localStorage vs HTTP-only cookies) discuss kar sakte ho.
+- Security ke liye JWT tokens ko insecure localStorage se hata kar **HTTP-only cookies** mein store karna implement kiya hai, jisse XSS attacks prevent hote hain.
 - Real-time messages ka scale badhne par pagination / infinite scrolling implement karna zaroori hoga.
 
 ## Presentable explanation
