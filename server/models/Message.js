@@ -11,6 +11,9 @@ const messageSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Compound index for optimal cursor pagination performance
+messageSchema.index({ senderId: 1, receiverId: 1, _id: -1 });
+
 const Message = mongoose.model('Message', messageSchema);
 export default Message;
 

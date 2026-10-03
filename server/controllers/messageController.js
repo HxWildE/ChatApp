@@ -39,27 +39,36 @@ export const getMessages = async (req, res) => {
     const myId = req.user._id;
 
     // Pagination Parameters
-    let page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 20;
+    const cursor = req.query.cursor; // The _id of the oldest message currently loaded on the client
 
-    if (page < 1) page = 1;
     if (limit < 1) limit = 20;
     if (limit > 50) limit = 50; // Prevent abusive limits
 
-    const skip = (page - 1) * limit;
-
-    const messages = await Message.find({
+    const query = {
       $or: [
         { senderId: myId, receiverId: selectedUserId },
         { senderId: selectedUserId, receiverId: myId }
       ]
-    })
-      .sort({ createdAt: -1 })
-      .skip(skip)
+    };
+
+    // If a cursor is provided, only fetch messages older than the cursor
+    if (cursor) {
+      query._id = { $lt: cursor };
+    }
+
+    const messages = await Message.find(query)
+      .sort({ _id: -1 }) // Sort by _id descending (newest first)
       .limit(limit);
 
-    // Messages are fetched newest first (descending), reverse them for chronological UI rendering
+    // Messages are fetched newest first, reverse them for chronological UI rendering
     const chronologicalMessages = messages.reverse();
+
+    // Determine the next cursor (the _id of the oldest message in this batch)
+    // Since chronologicalMessages is reversed, the oldest message is at index 0.
+    // If we fetched less than the limit, there are no more messages to fetch.
+    const hasMore = messages.length === limit;
+    const nextCursor = hasMore && chronologicalMessages.length > 0 ? chronologicalMessages[0]._id : null;
 
     // Mark retrieved unseen messages as seen
     await Message.updateMany(
@@ -71,9 +80,9 @@ export const getMessages = async (req, res) => {
       success: true, 
       messages: chronologicalMessages,
       pagination: {
-        page,
+        nextCursor,
         limit,
-        hasMore: messages.length === limit
+        hasMore
       }
     });
   } catch (error) {
