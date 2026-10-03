@@ -55,6 +55,7 @@ NEXUS provides a seamless communication experience built on a responsive dark UI
 
 - ⚡ **Real-Time Messaging**: Built on **Socket.IO** for instant, bi-directional message delivery with zero page refreshes.
 - 🟢 **Online Presence & Typing Indicators**: Live user status updates and real-time notification when a peer is composing a message.
+- 📜 **Cursor-Based Pagination**: Highly optimized, O(1) performance message history loading, immune to real-time data shifting.
 - 🎨 **Premium "Big Tech" UI**: A hyper-polished, responsive dark mode aesthetic featuring sleek minimalist chat bubbles, edge-to-edge sidebar lists, and fluid transitions.
 - 🔤 **Dynamic Font Switcher**: Built-in settings module to toggle instantly between premium UI fonts (Inter, Roboto, Poppins, System) via a global Theme Context.
 - 🔐 **Secure Authentication & Rate Limiting**: User sign-up/login with **bcryptjs**, **JWT** sessions, and robust backend protection using **express-rate-limit** and dynamic CORS.
