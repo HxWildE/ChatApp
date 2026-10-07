@@ -21,3 +21,7 @@ extraQuestions/
 interviewFinAL/
 errors.txt
 naive.md
+
+# Agent and tooling files
+.agents/
+repomix-output.xml
