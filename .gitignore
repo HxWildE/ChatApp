@@ -14,6 +14,8 @@ build/
 auto_pusher.log
 auto_pusher.ps1
 
+diagrams/
+
 # Documentation and Learning Folders (Local only)
 PROJECTREAD/
 docs/
