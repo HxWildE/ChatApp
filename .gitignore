@@ -14,12 +14,17 @@ build/
 auto_pusher.log
 auto_pusher.ps1
 
-diagrams/
-
 # Documentation and Learning Folders (Local only)
 PROJECTREAD/
 docs/
+diagrams/
+extraQuestions/
+interviewFinAL/
+upgrades/
 
 # Scratch files
 extract.js
 themechange.txt
+errors.txt
+naive.md
+repomix-output.xml
