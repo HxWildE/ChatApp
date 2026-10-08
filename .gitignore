@@ -17,11 +17,7 @@ auto_pusher.ps1
 # Documentation and Learning Folders (Local only)
 PROJECTREAD/
 docs/
-extraQuestions/
-interviewFinAL/
-errors.txt
-naive.md
 
-# Agent and tooling files
-.agents/
-repomix-output.xml
+# Scratch files
+extract.js
+themechange.txt
