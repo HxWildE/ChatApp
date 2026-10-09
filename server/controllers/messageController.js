@@ -52,7 +52,8 @@ export const getMessages = async (req, res) => {
       ]
     };
 
-    // If a cursor is provided, only fetch messages older than the cursor
+    // If a cursor is provided, only fetch messages older 
+    // than the cursor
     if (cursor) {
       query._id = { $lt: cursor };
     }
