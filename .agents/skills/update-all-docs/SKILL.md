@@ -17,10 +17,12 @@ When the user asks to "update all docs" or invokes this skill, you must execute 
    - Look at `client/package.json` and `server/package.json` to identify newly added dependencies.
 
 2. **Target Directories for Updates:**
-   You must ensure documentation in the following directories is completely accurate:
+   You must ensure documentation in all of the following directories is completely accurate:
    - `docs/`
    - `PROJECTREAD/`
+   - `interviewFinAL/`
    - `docs/interview-dossier/`
+   - `diagrams/`
 
 3. **Execution Protocol:**
    - Instead of blindly rewriting entire files, identify outdated architectural claims (e.g., deprecated authentication methods, old database query logic, missing caching layers).

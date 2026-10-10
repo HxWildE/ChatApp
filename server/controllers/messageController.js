@@ -6,7 +6,18 @@ import { io, userSocketMap } from "../socket/socket.js";
 export const getUsersForSidebar = async (req, res) => {
   try {
     const userId = req.user._id;
-    const filteredUsers = await User.find({ _id: { $ne: userId } }).select('-password');
+    
+    // Fetch only verified friends
+    const Friendship = (await import("../models/Friendship.js")).default;
+    const friendships = await Friendship.find({
+      $or: [{ user1: userId }, { user2: userId }]
+    });
+
+    const friendIds = friendships.map(f => 
+      f.user1.toString() === userId.toString() ? f.user2 : f.user1
+    );
+
+    const filteredUsers = await User.find({ _id: { $in: friendIds } }).select('-password');
 
     const unseenCounts = await Message.aggregate([
       {
