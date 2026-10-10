@@ -96,6 +96,34 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("messageDelivered", async ({ messageId, senderId }) => {
+    const Message = (await import("../models/Message.js")).default;
+    await Message.findByIdAndUpdate(messageId, { status: 'delivered' });
+    
+    const senderSocketId = userSocketMap[senderId];
+    if (senderSocketId) {
+      io.to(senderSocketId).emit("messageStatusUpdated", {
+        messageId,
+        status: 'delivered'
+      });
+    }
+  });
+
+  socket.on("markAsSeen", async ({ senderId }) => {
+    const Message = (await import("../models/Message.js")).default;
+    await Message.updateMany(
+      { senderId, receiverId: userId, status: { $ne: 'seen' } },
+      { status: 'seen' }
+    );
+    
+    const senderSocketId = userSocketMap[senderId];
+    if (senderSocketId) {
+      io.to(senderSocketId).emit("messagesSeen", {
+        receiverId: userId
+      });
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("User Disconnected", userId);
 

@@ -8,20 +8,25 @@ export const getUsersForSidebar = async (req, res) => {
     const userId = req.user._id;
     const filteredUsers = await User.find({ _id: { $ne: userId } }).select('-password');
 
-    const unseenMessages = {};
-    const promises = filteredUsers.map(async (user) => {
-      const messages = await Message.find({
-        senderId: user._id,
-        receiverId: userId,
-        seen: false
-      });
-
-      if (messages.length > 0) {
-        unseenMessages[user._id] = messages.length;
+    const unseenCounts = await Message.aggregate([
+      {
+        $match: {
+          receiverId: userId,
+          status: { $ne: 'seen' }
+        }
+      },
+      {
+        $group: {
+          _id: "$senderId",
+          count: { $sum: 1 }
+        }
       }
-    });
+    ]);
 
-    await Promise.all(promises);
+    const unseenMessages = {};
+    unseenCounts.forEach((item) => {
+      unseenMessages[item._id] = item.count;
+    });
     res.status(200).json({
       success: true,
       users: filteredUsers,
@@ -71,10 +76,10 @@ export const getMessages = async (req, res) => {
     const hasMore = messages.length === limit;
     const nextCursor = hasMore && chronologicalMessages.length > 0 ? chronologicalMessages[0]._id : null;
 
-    // Mark retrieved unseen messages as seen
+    // Mark retrieved unseen messages as delivered/seen
     await Message.updateMany(
-      { senderId: selectedUserId, receiverId: myId, seen: false },
-      { seen: true }
+      { senderId: selectedUserId, receiverId: myId, status: { $ne: 'seen' } },
+      { status: 'seen' }
     );
 
     res.status(200).json({ 
@@ -95,7 +100,7 @@ export const getMessages = async (req, res) => {
 export const markMessagesAsSeen = async (req, res) => {
   try {
     const { id } = req.params;
-    await Message.findByIdAndUpdate(id, { seen: true });
+    await Message.findByIdAndUpdate(id, { status: 'seen' });
     res.status(200).json({ success: true });
   } catch (error) {
     console.log(error.message);

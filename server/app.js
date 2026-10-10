@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import messageRouter from './routes/messageRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import friendRouter from './routes/friendRoutes.js';
 
 const clientUrl = process.env.CLIENT_URL;
 const app = express();
@@ -42,5 +43,6 @@ app.use(cookieParser());
 app.use('/api/status', (req, res) => res.send('Server is live !'));
 app.use('/api/auth', userRouter);
 app.use('/api/messages', messageRouter);
+app.use('/api/friends', friendRouter);
 
 export default app;
