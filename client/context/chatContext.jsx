@@ -45,6 +45,10 @@ export const ChatProvider = ({ children }) => {
             if (data.success) {
                 if (page === 1) {
                     setMessages(data.messages);
+                    // Mark as seen in real-time via socket
+                    if (socket) {
+                        socket.emit("markAsSeen", { senderId: userId });
+                    }
                 } else {
                     setMessages(prev => {
                         const existingIds = new Set(prev.map(m => m._id));
@@ -77,9 +81,16 @@ export const ChatProvider = ({ children }) => {
         if (!socket) return;
 
         socket.on("newMessage", (newMessage) => {
-            if (selectedUser && newMessage.senderId === selectedUser._id) {
-                newMessage.seen = true;
+            // App-Level ACK: notify sender that their message was delivered to receiver device
+            socket.emit("messageDelivered", { 
+                messageId: newMessage._id, 
+                senderId: newMessage.senderId 
+            });
+
+            if (selectedUser && (newMessage.senderId === selectedUser._id || String(newMessage.senderId) === String(selectedUser._id))) {
+                newMessage.status = 'seen';
                 setMessages((prevMessages) => [...prevMessages, newMessage]);
+                socket.emit("markAsSeen", { senderId: newMessage.senderId });
                 axios.get(`/api/messages/mark/${newMessage._id}`);
             } else {
                 setunseenMessages((prevUnseenMessages) => ({
@@ -87,6 +98,21 @@ export const ChatProvider = ({ children }) => {
                     [newMessage.senderId]: (prevUnseenMessages[newMessage.senderId] || 0) + 1
                 }));
             }
+        });
+
+        // Real-time Delivery ACK updates (sent -> delivered)
+        socket.on("messageStatusUpdated", ({ messageId, status }) => {
+            setMessages((prev) => prev.map(m => (m._id === messageId || String(m._id) === String(messageId)) ? { ...m, status } : m));
+        });
+
+        // Real-time Seen ACK updates (turns double-blue when friend opens chat)
+        socket.on("messagesSeen", ({ receiverId }) => {
+            setMessages((prev) => prev.map(m => {
+                if (m.receiverId === receiverId || String(m.receiverId) === String(receiverId)) {
+                    return { ...m, status: 'seen' };
+                }
+                return m;
+            }));
         });
 
         socket.on("friendRequestReceived", (request) => {
@@ -109,9 +135,12 @@ export const ChatProvider = ({ children }) => {
     const unsubscribeFromMessages = () => {
         if (!socket) return;
         socket.off("newMessage");
+        socket.off("messageStatusUpdated");
+        socket.off("messagesSeen");
         socket.off("friendRequestReceived");
         socket.off("friendRequestAccepted");
     };
+
 
     useEffect(() => {
         subscribetoMessages();

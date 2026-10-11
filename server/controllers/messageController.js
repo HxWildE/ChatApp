@@ -93,6 +93,9 @@ export const getMessages = async (req, res) => {
       { status: 'seen' }
     );
 
+    // Notify sender in real-time that their messages were seen (turns ticks double-blue)
+    io.to(selectedUserId.toString()).emit("messagesSeen", { receiverId: myId.toString() });
+
     res.status(200).json({ 
       success: true, 
       messages: chronologicalMessages,
@@ -111,7 +114,10 @@ export const getMessages = async (req, res) => {
 export const markMessagesAsSeen = async (req, res) => {
   try {
     const { id } = req.params;
-    await Message.findByIdAndUpdate(id, { status: 'seen' });
+    const msg = await Message.findByIdAndUpdate(id, { status: 'seen' }, { new: true });
+    if (msg) {
+      io.to(msg.senderId.toString()).emit("messageStatusUpdated", { messageId: msg._id, status: 'seen' });
+    }
     res.status(200).json({ success: true });
   } catch (error) {
     console.log(error.message);
@@ -138,20 +144,23 @@ export const sendMessage = async (req,res) =>{
           imageUrl = upload.secure_url;
         }
 
+      // Check if receiver is online in userSocketMap to immediately mark as delivered
+      const isReceiverOnline = userSocketMap[receiverId.toString()] && userSocketMap[receiverId.toString()].size > 0;
+      const initialStatus = isReceiverOnline ? 'delivered' : 'sent';
 
       const newMessage = await Message.create({
         senderId,
         receiverId,
         text,
-        image :imageUrl
-      })
+        image: imageUrl,
+        status: initialStatus
+      });
 
       // Emit to receiver's room (supports multiple tabs/devices reliably)
       io.to(receiverId.toString()).emit("newMessage", newMessage);
 
-  res.status(201).json({success : true , newMessage})
-
-    }catch(error){
+      res.status(201).json({ success: true, newMessage });
+    } catch (error) {
   console.log(error.message);
     res.status(500).json({ success: false, message: error.message });
     }

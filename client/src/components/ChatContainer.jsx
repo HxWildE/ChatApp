@@ -209,14 +209,19 @@ const ChatContainer = () => {
           </div>
         )}
         
-        { messages.map((msg,index)=>(
-          <div key={index} className={`flex items-end gap-2 mb-2 ${msg.senderId === authUser._id ? 'justify-end' : 'justify-start'}`}>
+        { messages.map((msg,index)=>{
+          const isMe = msg.senderId === authUser?._id || String(msg.senderId) === String(authUser?._id);
+          const isSeen = msg.status === 'seen' || msg.seen === true;
+          const isDelivered = msg.status === 'delivered';
+
+          return (
+          <div key={msg._id || index} className={`flex items-end gap-2 mb-2 ${isMe ? 'justify-end' : 'justify-start'}`}>
             
-            {msg.senderId !== authUser._id && (
+            {!isMe && (
                <img src={selectedUser?.profilePic || assets.avatar_icon} alt="" className='w-7 h-7 rounded-full object-cover flex-shrink-0 mb-1'/>
             )}
 
-            <div className={`flex flex-col gap-1 max-w-[75%] ${msg.senderId === authUser._id ? 'items-end' : 'items-start'}`}>
+            <div className={`flex flex-col gap-1 max-w-[75%] ${isMe ? 'items-end' : 'items-start'}`}>
               { msg.image && (
                 <div className="relative group max-w-[260px] min-h-[120px] rounded-xl overflow-hidden bg-slate-900 border border-slate-700/60 shadow-md">
                   <img 
@@ -235,21 +240,35 @@ const ChatContainer = () => {
               )}
               { msg.text && (
                 <p className={`py-[6px] px-3.5 md:text-sm font-normal break-words whitespace-pre-wrap
-                  ${msg.senderId === authUser._id 
+                  ${isMe 
                     ? 'bg-blue-600 text-white rounded-2xl rounded-br-sm' 
                     : 'bg-[#27272a] text-zinc-100 rounded-2xl rounded-bl-sm'}`}>
                   {msg.text}
                 </p>
               )}
-              <span className='text-[10px] text-slate-500 font-medium'>{formatMessageTime(msg.createdAt)}</span>
+              <div className="flex items-center gap-1 self-end mt-0.5">
+                <span className='text-[10px] text-slate-500 font-medium'>{formatMessageTime(msg.createdAt)}</span>
+                {isMe && (
+                  <span className="inline-flex items-center select-none" title={isSeen ? 'Seen' : isDelivered ? 'Delivered' : 'Sent'}>
+                    {isSeen ? (
+                      <span className="text-sky-400 font-bold text-[12px] tracking-[-2px] leading-none" title="Seen">✓✓</span>
+                    ) : isDelivered ? (
+                      <span className="text-slate-400 font-bold text-[12px] tracking-[-2px] leading-none" title="Delivered">✓✓</span>
+                    ) : (
+                      <span className="text-slate-400 font-bold text-[12px] leading-none" title="Sent">✓</span>
+                    )}
+                  </span>
+                )}
+              </div>
             </div>
 
-            {msg.senderId === authUser._id && (
+            {isMe && (
                <img src={authUser?.profilePic || assets.avatar_icon} alt="" className='w-7 h-7 rounded-full object-cover flex-shrink-0 mb-1'/>
             )}
 
           </div>
-      ))}
+        );
+      })}
 
       {isTyping && (
         <div className='flex items-center gap-2 justify-start mb-2 pl-1'>
