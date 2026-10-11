@@ -234,7 +234,7 @@ const ExplorePage = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search users by name or email..."
+                  placeholder="Search users by name..."
                   className="w-full pl-10 pr-10 py-3 bg-slate-800/80 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-white/20 transition shadow-inner"
                 />
                 {searchQuery && (
@@ -259,12 +259,13 @@ const ExplorePage = () => {
                     🔍
                   </div>
                   <p className="text-sm font-medium text-slate-300">No users found</p>
-                  <p className="text-xs text-slate-500 mt-1">Try searching with a different name or email</p>
+                  <p className="text-xs text-slate-500 mt-1">Try searching with a different name</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {users.map((user) => {
-                    const isOnline = onlineUsers.includes(String(user._id));
+                    // Privacy-First: Only show online status if users are already mutual friends
+                    const isOnline = user.relationship === 'friend' && onlineUsers.includes(String(user._id));
                     const isProcessing = actionLoading[user._id] || (user.requestId && actionLoading[user.requestId]);
 
                     return (
@@ -295,8 +296,7 @@ const ExplorePage = () => {
                                 </span>
                               )}
                             </div>
-                            <p className="text-xs text-slate-400 truncate">{user.email}</p>
-                            <p className="text-xs text-slate-500 mt-1 line-clamp-1 italic">
+                            <p className="text-xs text-slate-400 mt-1 line-clamp-1 italic">
                               {user.bio ? `"${user.bio}"` : 'No bio added'}
                             </p>
                           </div>
@@ -413,9 +413,8 @@ const ExplorePage = () => {
                           />
                           <div>
                             <h3 className="text-sm font-semibold text-white">{sender.fullName}</h3>
-                            <p className="text-xs text-slate-400">{sender.email}</p>
                             {sender.bio && (
-                              <p className="text-xs text-slate-500 mt-0.5 italic">"{sender.bio}"</p>
+                              <p className="text-xs text-slate-400 mt-0.5 italic">"{sender.bio}"</p>
                             )}
                           </div>
                         </div>
@@ -474,7 +473,6 @@ const ExplorePage = () => {
                           />
                           <div>
                             <h3 className="text-sm font-semibold text-white">{receiver.fullName}</h3>
-                            <p className="text-xs text-slate-400">{receiver.email}</p>
                             <span className="inline-block mt-1 text-[10px] bg-slate-800 text-slate-400 border border-slate-700/60 px-2 py-0.5 rounded-full font-medium">
                               Waiting for approval...
                             </span>

@@ -35,7 +35,7 @@ export const sendFriendRequest = async (req, res) => {
     const newRequest = await FriendRequest.create({ sender: senderId, receiver: receiverId });
     
     const populatedRequest = await FriendRequest.findById(newRequest._id)
-      .populate('sender', '-password')
+      .populate('sender', '-password -email')
       .lean();
 
     const receiverSocket = userSocketMap[receiverId];
@@ -120,14 +120,11 @@ export const searchUsers = async (req, res) => {
 
     const filter = { _id: { $ne: currentUserId } };
     if (query && query.trim()) {
-      filter.$or = [
-        { fullName: { $regex: query.trim(), $options: 'i' } },
-        { email: { $regex: query.trim(), $options: 'i' } }
-      ];
+      filter.fullName = { $regex: query.trim(), $options: 'i' };
     }
 
     const candidateUsers = await User.find(filter)
-      .select('-password')
+      .select('-password -email')
       .limit(30)
       .lean();
 
@@ -190,12 +187,12 @@ export const getFriendRequests = async (req, res) => {
     const currentUserId = req.user._id;
 
     const received = await FriendRequest.find({ receiver: currentUserId, status: 'pending' })
-      .populate('sender', '-password')
+      .populate('sender', '-password -email')
       .sort({ createdAt: -1 })
       .lean();
 
     const sent = await FriendRequest.find({ sender: currentUserId, status: 'pending' })
-      .populate('receiver', '-password')
+      .populate('receiver', '-password -email')
       .sort({ createdAt: -1 })
       .lean();
 
