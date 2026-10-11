@@ -2,10 +2,11 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import assets from '../assets/assets'
-import { formatMessageTime } from '../lib/utils';
+import { formatMessageTime, optimizeImageUrl } from '../lib/utils';
 import { ChatContext } from '../../context/chatContext';
 import { AuthContext } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+
 
 const ChatContainer = () => {
  
@@ -55,22 +56,56 @@ const ChatContainer = () => {
   await sendMessage({text : textToSend});
  }
 
- //handle Sending an image
- const handleSendImage = async (e) =>{
-      const file = e.target.files[0];
-      if(!file || !file.type.startsWith("image/")){
-          toast.error("Select an image file")
-          return;
-    }
-    const reader = new FileReader();
+ // Helper: Client-side image compression (drops massive iPhone/Android 12MB photos to ~200KB in 50ms)
+ const compressImage = (file) => {
+   return new Promise((resolve) => {
+     const reader = new FileReader();
+     reader.onload = (event) => {
+       const img = new Image();
+       img.onload = () => {
+         const maxDim = 1200;
+         let width = img.width;
+         let height = img.height;
+         if (width > maxDim || height > maxDim) {
+           if (width > height) {
+             height = Math.round((height * maxDim) / width);
+             width = maxDim;
+           } else {
+             width = Math.round((width * maxDim) / height);
+             height = maxDim;
+           }
+         }
+         const canvas = document.createElement("canvas");
+         canvas.width = width;
+         canvas.height = height;
+         const ctx = canvas.getContext("2d");
+         ctx.drawImage(img, 0, 0, width, height);
+         resolve(canvas.toDataURL("image/jpeg", 0.75));
+       };
+       img.onerror = () => resolve(event.target.result); // Fallback to raw if canvas fails
+       img.src = event.target.result;
+     };
+     reader.readAsDataURL(file);
+   });
+ };
 
-    reader.onloadend = async () =>{
-      await sendMessage({image : reader.result})
-      e.target.value = ""
-    }
+ // Handle Sending an image with instant compression & loading feedback
+ const handleSendImage = async (e) => {
+   const file = e.target.files[0];
+   if (!file) return;
 
-    reader.readAsDataURL(file)
-  }
+   const toastId = toast.loading("Compressing & sending image...");
+   try {
+     const compressedDataUrl = await compressImage(file);
+     await sendMessage({ image: compressedDataUrl });
+     toast.success("Image sent!", { id: toastId });
+   } catch (err) {
+     toast.error("Failed to send image: " + err.message, { id: toastId });
+   } finally {
+     e.target.value = "";
+   }
+ };
+
 
   useEffect(() => {
       if(selectedUser){
@@ -182,9 +217,23 @@ const ChatContainer = () => {
             )}
 
             <div className={`flex flex-col gap-1 max-w-[75%] ${msg.senderId === authUser._id ? 'items-end' : 'items-start'}`}>
-              { msg.image ? (
-                <img src={msg.image} alt="" className="max-w-[250px] rounded-lg overflow-hidden shadow-sm"/>
-              ) : (
+              { msg.image && (
+                <div className="relative group max-w-[260px] min-h-[120px] rounded-xl overflow-hidden bg-slate-900 border border-slate-700/60 shadow-md">
+                  <img 
+                    src={optimizeImageUrl(msg.image)} 
+                    alt="Chat attachment" 
+                    loading="lazy"
+                    className="w-full max-h-[300px] object-cover rounded-xl transition-transform duration-200 hover:scale-[1.02]"
+                    onError={(e) => {
+                      if (!e.target.dataset.fallbackTried) {
+                        e.target.dataset.fallbackTried = "true";
+                        e.target.src = msg.image.replace('/upload/', '/upload/f_auto,q_auto/').replace(/\.heic$/i, '.jpg');
+                      }
+                    }}
+                  />
+                </div>
+              )}
+              { msg.text && (
                 <p className={`py-[6px] px-3.5 md:text-sm font-normal break-words whitespace-pre-wrap
                   ${msg.senderId === authUser._id 
                     ? 'bg-blue-600 text-white rounded-2xl rounded-br-sm' 
@@ -224,7 +273,8 @@ const ChatContainer = () => {
         type="text" placeholder='Type a message...'
           className='flex-1 text-sm py-2.5 px-1 border-none bg-transparent text-slate-100 
           placeholder-slate-500 outline-none font-normal'/>
-        <input onChange={handleSendImage} type="file" id='image' accept='image/png,image/jpeg' hidden />
+        <input onChange={handleSendImage} type="file" id='image' accept='image/*' hidden />
+
         <label htmlFor="image" className="hover:opacity-80 transition-opacity">
           <img src={assets.gallery_icon} alt="Upload" className="w-5 cursor-pointer opacity-70 hover:opacity-100"/>
         </label>

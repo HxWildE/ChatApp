@@ -127,9 +127,17 @@ export const sendMessage = async (req,res) =>{
 
         let imageUrl;
         if (image) {
-          const upload = await cloudinary.uploader.upload(image);
+          const upload = await cloudinary.uploader.upload(image, {
+            folder: "chat_messages",
+            resource_type: "image",
+            format: "jpg", // Forces browser-compatible format (converts iPhone HEIC)
+            transformation: [
+              { width: 1200, height: 1200, crop: "limit", quality: "auto" }
+            ]
+          });
           imageUrl = upload.secure_url;
         }
+
 
       const newMessage = await Message.create({
         senderId,

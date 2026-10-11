@@ -98,9 +98,17 @@ export const updateProfile = async (req, res) => {
     if (bio !== undefined) updateData.bio = bio;
 
     if (profilePic) {
-      const upload = await cloudinary.uploader.upload(profilePic);
+      const upload = await cloudinary.uploader.upload(profilePic, {
+        folder: "profile_pics",
+        resource_type: "image",
+        format: "jpg",
+        transformation: [
+          { width: 500, height: 500, crop: "fill", gravity: "face", quality: "auto" }
+        ]
+      });
       updateData.profilePic = upload.secure_url;
     }
+
 
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
 
