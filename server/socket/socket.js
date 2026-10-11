@@ -29,7 +29,8 @@ export const io = new Server(server, {
   }
 });
 
-export const userSocketMap = {}; // { userId: socketId }
+export const userSocketMap = {}; // { userId: Set<socketId> }
+const disconnectTimeouts = new Map(); // { userId: timeoutId }
 
 io.use((socket, next) => {
   try {
@@ -54,7 +55,7 @@ io.use((socket, next) => {
       process.env.JWT_SECRET
     );
 
-    socket.userId = decoded.userId;
+    socket.userId = decoded.userId?.toString();
 
     next();
   } catch (error) {
@@ -65,74 +66,101 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   const userId = socket.userId;
 
-  console.log("User Connected", userId);
-
   if (userId) {
-    userSocketMap[userId] = socket.id;
+    // Cancel any pending disconnect grace timer if user reconnects (e.g. page refresh / route change)
+    if (disconnectTimeouts.has(userId)) {
+      clearTimeout(disconnectTimeouts.get(userId));
+      disconnectTimeouts.delete(userId);
+    }
+
+    if (!userSocketMap[userId]) {
+      userSocketMap[userId] = new Set();
+    }
+    userSocketMap[userId].add(socket.id);
+
+    // Join room dedicated to this userId for 100% reliable multi-device / multi-tab event delivery
+    socket.join(userId);
+
+    console.log(`User Connected: ${userId} (active sockets: ${userSocketMap[userId].size})`);
   }
 
-  io.emit(
-    "getOnlineUsers",
-    Object.keys(userSocketMap)
-  );
+  // Send current online users to newly connected socket immediately
+  socket.emit("getOnlineUsers", Object.keys(userSocketMap));
+
+  // Broadcast to all clients
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
   socket.on("typing", ({ receiverId }) => {
-    const receiverSocketId = userSocketMap[receiverId];
-
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("typing", {
+    if (receiverId) {
+      io.to(receiverId.toString()).emit("typing", {
         senderId: userId
       });
     }
   });
 
   socket.on("stopTyping", ({ receiverId }) => {
-    const receiverSocketId = userSocketMap[receiverId];
-
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("stopTyping", {
+    if (receiverId) {
+      io.to(receiverId.toString()).emit("stopTyping", {
         senderId: userId
       });
     }
   });
 
   socket.on("messageDelivered", async ({ messageId, senderId }) => {
-    const Message = (await import("../models/Message.js")).default;
-    await Message.findByIdAndUpdate(messageId, { status: 'delivered' });
-    
-    const senderSocketId = userSocketMap[senderId];
-    if (senderSocketId) {
-      io.to(senderSocketId).emit("messageStatusUpdated", {
-        messageId,
-        status: 'delivered'
-      });
+    try {
+      const Message = (await import("../models/Message.js")).default;
+      await Message.findByIdAndUpdate(messageId, { status: 'delivered' });
+      
+      if (senderId) {
+        io.to(senderId.toString()).emit("messageStatusUpdated", {
+          messageId,
+          status: 'delivered'
+        });
+      }
+    } catch (err) {
+      console.error("Error in messageDelivered socket handler:", err);
     }
   });
 
   socket.on("markAsSeen", async ({ senderId }) => {
-    const Message = (await import("../models/Message.js")).default;
-    await Message.updateMany(
-      { senderId, receiverId: userId, status: { $ne: 'seen' } },
-      { status: 'seen' }
-    );
-    
-    const senderSocketId = userSocketMap[senderId];
-    if (senderSocketId) {
-      io.to(senderSocketId).emit("messagesSeen", {
-        receiverId: userId
-      });
+    try {
+      const Message = (await import("../models/Message.js")).default;
+      await Message.updateMany(
+        { senderId, receiverId: userId, status: { $ne: 'seen' } },
+        { status: 'seen' }
+      );
+      
+      if (senderId) {
+        io.to(senderId.toString()).emit("messagesSeen", {
+          receiverId: userId
+        });
+      }
+    } catch (err) {
+      console.error("Error in markAsSeen socket handler:", err);
     }
   });
 
   socket.on("disconnect", () => {
-    console.log("User Disconnected", userId);
+    console.log(`Socket Disconnected: ${socket.id} (user: ${userId})`);
 
-    delete userSocketMap[userId];
+    if (userId && userSocketMap[userId]) {
+      userSocketMap[userId].delete(socket.id);
 
-    io.emit(
-      "getOnlineUsers",
-      Object.keys(userSocketMap)
-    );
+      // If user has no more active sockets, start a 2.5s grace period before marking offline
+      // This completely prevents flickering between online/offline on page refresh or brief reconnects
+      if (userSocketMap[userId].size === 0) {
+        const timeoutId = setTimeout(() => {
+          if (userSocketMap[userId] && userSocketMap[userId].size === 0) {
+            delete userSocketMap[userId];
+            disconnectTimeouts.delete(userId);
+            console.log(`User Marked Offline after grace period: ${userId}`);
+            io.emit("getOnlineUsers", Object.keys(userSocketMap));
+          }
+        }, 2500);
+
+        disconnectTimeouts.set(userId, timeoutId);
+      }
+    }
   });
 });
 

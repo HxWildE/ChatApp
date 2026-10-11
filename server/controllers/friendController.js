@@ -38,10 +38,8 @@ export const sendFriendRequest = async (req, res) => {
       .populate('sender', '-password -email')
       .lean();
 
-    const receiverSocket = userSocketMap[receiverId];
-    if (receiverSocket) {
-      io.to(receiverSocket).emit("friendRequestReceived", populatedRequest);
-    }
+    // Emit directly to receiver room
+    io.to(receiverId.toString()).emit("friendRequestReceived", populatedRequest);
     
     res.status(201).json({ success: true, data: populatedRequest });
   } catch (error) {
@@ -74,13 +72,11 @@ export const acceptFriendRequest = async (req, res) => {
     
     await session.commitTransaction();
 
-    const senderSocket = userSocketMap[request.sender];
-    if (senderSocket) {
-      io.to(senderSocket).emit("friendRequestAccepted", { 
-        userId: request.receiver,
-        acceptedBy: req.user
-      });
-    }
+    // Emit directly to sender room
+    io.to(request.sender.toString()).emit("friendRequestAccepted", { 
+      userId: request.receiver,
+      acceptedBy: req.user
+    });
 
     res.status(200).json({ success: true, message: "Friend request accepted." });
   } catch (error) {

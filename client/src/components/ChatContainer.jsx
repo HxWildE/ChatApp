@@ -124,19 +124,33 @@ const ChatContainer = () => {
    } 
 },[messages, isTyping]);
  
+  const isOnline = onlineUsers.includes(String(selectedUser?._id));
+
   return selectedUser ? (
     <div className='relative h-full flex flex-col min-h-0 min-w-0'>
-      <div className = 'flex items-center gap-3 py-4 mx-4 border-b border-slate-800'>
+      <div className = 'flex items-center gap-3 py-3.5 mx-4 border-b border-slate-800/80'>
       
-        <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className="w-8 h-8 rounded-full object-cover"/>
-        <p className='flex-1 text-lg text-slate-100 flex items-center gap-2'>
-         {selectedUser.fullName}
-         {isTyping ? (
-           <span className="text-xs text-blue-400 font-medium animate-pulse">typing...</span>
-         ) : (
-           onlineUsers.includes(String(selectedUser._id)) && <span className = "w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm" title="Online"></span>
-         )}
-        </p>
+        <div className="relative shrink-0">
+          <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className="w-9 h-9 rounded-full object-cover border border-slate-700"/>
+          {isOnline && (
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-900 rounded-full" title="Online"></span>
+          )}
+        </div>
+
+        <div className='flex-1 flex flex-col justify-center min-w-0'>
+          <p className='text-sm font-semibold text-slate-100 truncate'>
+            {selectedUser.fullName}
+          </p>
+          <span className="text-[11px] leading-tight">
+            {isTyping ? (
+              <span className="text-emerald-400 font-medium animate-pulse">typing...</span>
+            ) : isOnline ? (
+              <span className="text-emerald-400 font-medium">Online</span>
+            ) : (
+              <span className="text-slate-500">Offline</span>
+            )}
+          </span>
+        </div>
 
         <img onClick={()=>setSelectedUser(null)} src={assets.menu_icon} 
         alt="" className='md:hidden max-w-7 cursor-pointer'/>

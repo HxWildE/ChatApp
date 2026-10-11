@@ -138,10 +138,8 @@ export const sendMessage = async (req,res) =>{
         image :imageUrl
       })
 
-      const receiverSocketId = userSocketMap[receiverId];
-      if(receiverSocketId){
-        io.to(receiverSocketId).emit("newMessage" , newMessage);
-      } 
+      // Emit to receiver's room (supports multiple tabs/devices reliably)
+      io.to(receiverId.toString()).emit("newMessage", newMessage);
 
   res.status(201).json({success : true , newMessage})
 

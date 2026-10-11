@@ -8,7 +8,16 @@ import { Toaster } from 'react-hot-toast'
 import { AuthContext } from '../context/AuthContext'
 
 const App = () => {
-  const { authUser } = useContext(AuthContext);
+  const { authUser, isCheckingAuth } = useContext(AuthContext);
+
+  if (isCheckingAuth && !authUser) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#110e1b] text-slate-400 gap-3">
+        <div className="w-9 h-9 border-2 border-slate-700 border-t-blue-500 rounded-full animate-spin"></div>
+        <span className="text-xs tracking-wider uppercase text-slate-500 font-semibold">Connecting...</span>
+      </div>
+    );
+  }
 
   return (
     <div className='min-h-screen bg-[#110e1b] text-white w-full'>

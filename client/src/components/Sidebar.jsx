@@ -27,7 +27,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     getUsers();
-  }, [onlineUsers]);
+  }, []);
 
   return (
     <div className={`h-full p-6 text-slate-200 flex flex-col border-r border-slate-800/80

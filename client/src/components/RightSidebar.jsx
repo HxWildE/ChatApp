@@ -7,7 +7,7 @@ const RightSidebar = () => {
   const {selectedUser, messages} = useContext(ChatContext)
   const {logout, onlineUsers} = useContext(AuthContext)
   const msgImages = messages.filter(msg => msg.image).map(msg => msg.image)
-  const isOnline = selectedUser ? onlineUsers.includes(selectedUser._id) : false;
+  const isOnline = selectedUser ? onlineUsers.includes(String(selectedUser._id)) : false;
 
   return selectedUser ? (
     <div className={`bg-slate-900 border-l border-slate-800/50 text-slate-200 w-full h-full flex flex-col hidden lg:flex relative overflow-hidden`}>
@@ -25,9 +25,12 @@ const RightSidebar = () => {
               <span className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-500 border-2 border-slate-800 rounded-full"></span>
             )}
           </div>
-          <h1 className='text-xl font-semibold tracking-tight text-white mb-1'>
+          <h1 className='text-xl font-semibold tracking-tight text-white mb-0.5'>
             {selectedUser.fullName}
           </h1>
+          <span className={`text-xs mb-2 font-medium ${isOnline ? 'text-emerald-400' : 'text-slate-500'}`}>
+            {isOnline ? '● Active Now' : 'Offline'}
+          </span>
           <p className='text-sm text-slate-400 max-w-[200px] leading-relaxed'>
             {selectedUser.bio || "No bio available"}
           </p>
