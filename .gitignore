@@ -15,8 +15,8 @@ auto_pusher.log
 auto_pusher.ps1
 
 # Documentation and Learning Folders (Local only)
-PROJECTREAD/
-docs/
+YPROJECTREAD/
+Ydocs/
 diagrams/
 extraQuestions/
 interviewFinAL/
@@ -28,3 +28,5 @@ themechange.txt
 errors.txt
 naive.md
 repomix-output.xml
+.agents/
+.vscode/

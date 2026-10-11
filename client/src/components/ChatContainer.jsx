@@ -1,5 +1,6 @@
 
 import { useContext, useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import assets from '../assets/assets'
 import { formatMessageTime } from '../lib/utils';
 import { ChatContext } from '../../context/chatContext';
@@ -12,6 +13,7 @@ const ChatContainer = () => {
     sendMessage , getMessages} = useContext(ChatContext)
 
   const {authUser , onlineUsers, socket} = useContext(AuthContext)
+  const navigate = useNavigate();
    
  const scrollEnd = useRef()
  const typingTimeoutRef = useRef(null)
@@ -220,13 +222,26 @@ const ChatContainer = () => {
   </div>
 
   ) : (
-   <div className='flex flex-col items-center justify-center
-   h-full gap-2 text-slate-500 bg-slate-950 max-md:hidden'>
-        <input onChange={handleSendImage} type="file" id='image' accept='image/png,image/jpeg' hidden />
-  <p className='text-lg font-medium text-slate-300 tracking-wide'>
-       Chat Anytime, Anywhere </p>
-  </div>
-
+    <div className='flex flex-col items-center justify-center h-full gap-3 text-slate-400 bg-slate-950 max-md:hidden p-6 text-center'>
+      <div className='w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center shadow-lg'>
+        <img src={assets.logo} alt="Nexus" className="w-10 h-10 rounded-full object-cover opacity-80" />
+      </div>
+      <h2 className='text-lg font-bold text-slate-200 tracking-wide'>
+        Welcome to Nexus Chat
+      </h2>
+      <p className='text-xs text-slate-500 max-w-sm leading-relaxed'>
+        Select a friend from the left sidebar to start messaging, or discover new connections.
+      </p>
+      <button
+        onClick={() => navigate('/explore')}
+        className='mt-2 py-2 px-5 bg-white hover:bg-slate-200 text-black rounded-xl text-xs font-bold transition duration-150 shadow-md flex items-center gap-2'
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+        </svg>
+        Find New Friends
+      </button>
+    </div>
   )
 }
 

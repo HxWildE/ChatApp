@@ -13,6 +13,7 @@ This document tracks all major architectural upgrades, structural changes, and s
 | **2026-10-10** | **The N+1 Query Bottleneck** | Refactored `getUsersForSidebar` in `messageController`. Replaced `Promise.all` loop with a single MongoDB `$match` and `$group` **Aggregation Pipeline**. | ✅ Done | Senior (Performance) |
 | **2026-10-10** | **Message States (WhatsApp-style)** | Replaced `seen: boolean` with `status: enum`. Added `messageDelivered` and `markAsSeen` Socket.IO Acknowledgment loops. | ✅ Done | Senior (Real-time architecture) |
 | **2026-10-10** | **Friendship System (Normalized)** | Deprecated global user sidebar. Implemented `FriendRequest` and `Friendship` models. Used **MongoDB ACID Transactions** for atomic acceptance logic. | ✅ Done | Senior (DB Design) |
+| **2026-10-11** | **Friend Exploration & Request UI** | Built `ExplorePage.jsx` with search bar, 3 navigation tabs (Discover, Requests Received, Requests Sent), mutual status detection (`friend`, `sent`, `received`, `none`), high-contrast Send/Accept/Decline buttons, real-time Socket.IO invitation badges, and welcoming empty states. | ✅ Done | Senior / Full-Stack |
 | **2026-10-10** | **Media Messaging Architecture** | Documented the shift from Base64 parsing (which blocks the Node.js event loop) to Direct-to-Cloud (Presigned URLs via Cloudinary). | 🚧 Planning | Staff (Scalability) |
 
 ---
