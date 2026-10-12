@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState, useRef } from 'react'
 import assets from "../assets/assets"
 import { useNavigate } from 'react-router-dom'
 import { ChatContext } from '../../context/chatContext'
@@ -19,6 +19,7 @@ const Sidebar = () => {
 
   const [input, setInput] = useState('')
   const [showMenu, setShowMenu] = useState(false)
+  const menuTimeoutRef = useRef(null)
   const navigate = useNavigate();
 
   const filteredUsers = input 
@@ -27,7 +28,28 @@ const Sidebar = () => {
 
   useEffect(() => {
     getUsers();
+    return () => {
+      if (menuTimeoutRef.current) clearTimeout(menuTimeoutRef.current);
+    };
   }, []);
+
+  const handleMouseEnter = () => {
+    if (menuTimeoutRef.current) clearTimeout(menuTimeoutRef.current);
+    setShowMenu(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (menuTimeoutRef.current) clearTimeout(menuTimeoutRef.current);
+    menuTimeoutRef.current = setTimeout(() => {
+      setShowMenu(false);
+    }, 150);
+  };
+
+  const handleSelectOption = (callback) => {
+    if (menuTimeoutRef.current) clearTimeout(menuTimeoutRef.current);
+    setShowMenu(false);
+    callback();
+  };
 
   return (
     <div className={`h-full p-6 text-slate-200 flex flex-col border-r border-slate-800/80
@@ -58,40 +80,77 @@ const Sidebar = () => {
               )}
             </button>
 
-            {/* Menu Icon */}
-            <div className='relative'>
-              <img
-                src={assets.menu_icon}
-                alt='Menu'
-                className='max-h-5 cursor-pointer p-1 rounded hover:bg-white/10 transition duration-150'
-                onClick={() => setShowMenu(prev => !prev)}
-              />
+            {/* Menu Icon & Hover Dropdown */}
+            <div 
+              className='relative'
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <button
+                type='button'
+                className={`p-1.5 rounded-lg transition duration-150 flex items-center justify-center cursor-pointer ${
+                  showMenu ? 'bg-white/15 text-white' : 'hover:bg-white/10 text-slate-300 hover:text-white'
+                }`}
+                title='Menu options'
+                aria-haspopup="true"
+                aria-expanded={showMenu}
+              >
+                <img
+                  src={assets.menu_icon}
+                  alt='Menu'
+                  className='max-h-5 object-contain select-none pointer-events-none'
+                />
+              </button>
+
               {showMenu && (
-                <div className='absolute top-full right-0 z-50 w-44 p-3 mt-2 rounded-xl border border-slate-800 shadow-2xl bg-slate-800 text-slate-200'>
-                  <p
-                    onClick={() => { setShowMenu(false); navigate('/explore'); }}
-                    className='cursor-pointer text-xs text-slate-100 hover:text-white py-1.5 px-2 rounded hover:bg-white/10 transition flex items-center justify-between'
-                  >
-                    <span>Explore Friends</span>
-                    {incomingRequestsCount > 0 && (
-                      <span className='text-[10px] bg-red-500 text-white px-1.5 py-0.2 rounded-full font-bold'>
-                        {incomingRequestsCount}
-                      </span>
-                    )}
-                  </p>
-                  <p
-                    onClick={() => { setShowMenu(false); navigate('/profile'); }}
-                    className='cursor-pointer text-xs text-slate-100 hover:text-white py-1.5 px-2 rounded hover:bg-white/10 transition'
-                  >
-                    Edit Profile
-                  </p>
-                  <hr className='my-2 border-t border-slate-700' />
-                  <p
-                    onClick={() => { setShowMenu(false); logout(); }}
-                    className='cursor-pointer text-xs text-red-400 hover:text-red-300 py-1.5 px-2 rounded hover:bg-red-500/10 transition'
-                  >
-                    Logout
-                  </p>
+                <div 
+                  className='absolute top-full right-0 z-50 pt-2 w-48 transition-all duration-150 ease-out origin-top-right'
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <div className='p-1.5 rounded-xl border border-slate-700/80 shadow-2xl bg-slate-900/95 backdrop-blur-md text-slate-200'>
+                    <button
+                      type='button'
+                      onClick={() => handleSelectOption(() => navigate('/explore'))}
+                      className='w-full text-left cursor-pointer text-xs text-slate-200 hover:text-white py-2 px-2.5 rounded-lg hover:bg-white/10 transition flex items-center justify-between group/item'
+                    >
+                      <div className='flex items-center gap-2'>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-400 group-hover/item:text-white transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span className='font-medium'>Explore Friends</span>
+                      </div>
+                      {incomingRequestsCount > 0 && (
+                        <span className='text-[10px] bg-red-500 text-white px-1.5 py-0.2 rounded-full font-bold'>
+                          {incomingRequestsCount}
+                        </span>
+                      )}
+                    </button>
+
+                    <button
+                      type='button'
+                      onClick={() => handleSelectOption(() => navigate('/profile'))}
+                      className='w-full text-left cursor-pointer text-xs text-slate-200 hover:text-white py-2 px-2.5 rounded-lg hover:bg-white/10 transition flex items-center gap-2 group/item'
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-400 group-hover/item:text-white transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      <span className='font-medium'>Edit Profile</span>
+                    </button>
+
+                    <hr className='my-1.5 border-t border-slate-800' />
+
+                    <button
+                      type='button'
+                      onClick={() => handleSelectOption(() => logout())}
+                      className='w-full text-left cursor-pointer text-xs text-red-400 hover:text-red-300 py-2 px-2.5 rounded-lg hover:bg-red-500/10 transition flex items-center gap-2 group/item'
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-red-400 group-hover/item:text-red-300 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      <span className='font-medium'>Logout</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
