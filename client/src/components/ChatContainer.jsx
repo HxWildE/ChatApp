@@ -13,7 +13,7 @@ const ChatContainer = () => {
   const { messages , selectedUser, setSelectedUser , 
     sendMessage , getMessages} = useContext(ChatContext)
 
-  const {authUser , onlineUsers, socket} = useContext(AuthContext)
+  const {authUser , onlineUsers, socket, axios} = useContext(AuthContext)
   const navigate = useNavigate();
    
  const scrollEnd = useRef()
@@ -24,6 +24,13 @@ const ChatContainer = () => {
  const [page, setPage] = useState(1);
  const [hasMore, setHasMore] = useState(false);
  const [isLoadingOlder, setIsLoadingOlder] = useState(false);
+ const [smartReplies, setSmartReplies] = useState([]);
+ const [isLoadingReplies, setIsLoadingReplies] = useState(false);
+
+ const handleSelectReply = (replyText) => {
+   setInput(replyText);
+   setSmartReplies([]);
+ };
 
  const handleInputChange = (e) => {
   const value = e.target.value;
@@ -53,6 +60,7 @@ const ChatContainer = () => {
   //send stopTyping here else it will show typing for 1.5 sec even after sendig message
   const textToSend = input.trim();
   setInput("");
+  setSmartReplies([]);
   await sendMessage({text : textToSend});
  }
 
@@ -158,6 +166,53 @@ const ChatContainer = () => {
       scrollEnd.current?.scrollIntoView({behavior:'auto'})
    } 
 },[messages, isTyping]);
+
+  // Fetch AI Smart Replies whenever messages change or a friend is selected
+  useEffect(() => {
+    if (!selectedUser) {
+      setSmartReplies([]);
+      return;
+    }
+
+    // Only generate replies if the latest message was sent by the friend
+    if (messages && messages.length > 0) {
+      const lastMsg = messages[messages.length - 1];
+      const isFriendLast = String(lastMsg.senderId) === String(selectedUser._id);
+      if (!isFriendLast) {
+        setSmartReplies([]);
+        return;
+      }
+    }
+
+    const controller = new AbortController();
+
+    const fetchReplies = async () => {
+      setIsLoadingReplies(true);
+      try {
+        const { data } = await axios.get(`/api/ai/smart-replies/${selectedUser._id}`, {
+          signal: controller.signal
+        });
+        if (data?.success && Array.isArray(data.suggestions)) {
+          setSmartReplies(data.suggestions);
+        } else {
+          setSmartReplies([]);
+        }
+      } catch (err) {
+        if (err.name !== 'CanceledError' && err.code !== 'ERR_CANCELED') {
+          // Graceful fallback: keep chat unblocked
+          setSmartReplies([]);
+        }
+      } finally {
+        setIsLoadingReplies(false);
+      }
+    };
+
+    fetchReplies();
+
+    return () => {
+      controller.abort();
+    };
+  }, [selectedUser?._id, messages.length]);
  
   const isOnline = onlineUsers.includes(String(selectedUser?._id));
 
@@ -282,6 +337,39 @@ const ChatContainer = () => {
 
       <div ref={scrollEnd}></div>
     </div>
+
+    {/* Smart Reply Suggestions Bar */}
+    {smartReplies.length > 0 && (
+      <div className="px-4 py-2 bg-slate-900/95 backdrop-blur-md border-t border-slate-800/80 flex items-center gap-2 overflow-x-auto no-scrollbar animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-sky-400 shrink-0 select-none mr-1">
+          <span className="text-sm">✨</span>
+          <span className="hidden sm:inline">Smart Reply:</span>
+        </div>
+        
+        <div className="flex items-center gap-2 flex-nowrap">
+          {smartReplies.map((reply, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => handleSelectReply(reply)}
+              className="text-xs font-medium bg-slate-800/90 hover:bg-sky-600 hover:text-white text-slate-200 px-3.5 py-1.5 rounded-full border border-slate-700/70 hover:border-sky-500 shadow-sm transition-all duration-150 transform hover:scale-105 active:scale-95 whitespace-nowrap flex items-center gap-1 cursor-pointer"
+            >
+              {reply}
+            </button>
+          ))}
+        </div>
+
+        {/* Dismiss button */}
+        <button
+          type="button"
+          onClick={() => setSmartReplies([])}
+          className="ml-auto text-slate-500 hover:text-slate-300 p-1 text-xs shrink-0 transition-colors cursor-pointer"
+          title="Dismiss suggestions"
+        >
+          ✕
+        </button>
+      </div>
+    )}
 
 {/* bottomarea */}
     <div className='flex items-center gap-2 p-3 bg-slate-900'>

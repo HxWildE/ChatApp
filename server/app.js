@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import messageRouter from './routes/messageRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import friendRouter from './routes/friendRoutes.js';
+import aiRouter from './routes/aiRoutes.js';
 
 const clientUrl = process.env.CLIENT_URL;
 const app = express();
@@ -44,5 +45,7 @@ app.use('/api/status', (req, res) => res.send('Server is live !'));
 app.use('/api/auth', userRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/friends', friendRouter);
+app.use('/api/ai', aiRouter);
+
 
 export default app;
