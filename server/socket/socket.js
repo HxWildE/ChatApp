@@ -91,7 +91,7 @@ io.on("connection", (socket) => {
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
   socket.on("typing", ({ receiverId }) => {
-    if (receiverId) {
+    if (receiverId && userId && receiverId.toString() !== userId.toString()) {
       io.to(receiverId.toString()).emit("typing", {
         senderId: userId
       });
@@ -99,12 +99,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("stopTyping", ({ receiverId }) => {
-    if (receiverId) {
+    if (receiverId && userId && receiverId.toString() !== userId.toString()) {
       io.to(receiverId.toString()).emit("stopTyping", {
         senderId: userId
       });
     }
   });
+
 
   socket.on("messageDelivered", async ({ messageId, senderId }) => {
     try {

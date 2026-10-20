@@ -18,9 +18,12 @@ const ChatContainer = () => {
    
  const scrollEnd = useRef()
  const typingTimeoutRef = useRef(null)
+ const receiverTypingTimeoutRef = useRef(null)
+ const lastTypingEmitRef = useRef(0)
 
  const [input , setInput] = useState('');
  const [isTyping, setIsTyping] = useState(false);
+
  const [page, setPage] = useState(1);
  const [hasMore, setHasMore] = useState(false);
  const [isLoadingOlder, setIsLoadingOlder] = useState(false);
@@ -36,18 +39,33 @@ const ChatContainer = () => {
   const value = e.target.value;
   setInput(value);
 
-  if (!socket || !selectedUser) return;
+  if (!socket || !selectedUser?._id) return;
 
   if (value.trim() !== '') {
-    socket.emit("typing", { receiverId: selectedUser._id });
+    const now = Date.now();
+    // Throttle outbound typing events so we don't spam the socket on every single letter
+    if (now - lastTypingEmitRef.current > 1200) {
+      socket.emit("typing", { receiverId: selectedUser._id });
+      lastTypingEmitRef.current = now;
+    }
 
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
       socket.emit("stopTyping", { receiverId: selectedUser._id });
-    }, 1500);
+      lastTypingEmitRef.current = 0;
+    }, 2000);
   } else {
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     socket.emit("stopTyping", { receiverId: selectedUser._id });
+    lastTypingEmitRef.current = 0;
+  }
+ };
+
+ const handleInputBlur = () => {
+  if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+  if (socket && selectedUser?._id) {
+    socket.emit("stopTyping", { receiverId: selectedUser._id });
+    lastTypingEmitRef.current = 0;
   }
  };
 
@@ -55,14 +73,15 @@ const ChatContainer = () => {
   if (e) e.preventDefault();
   if(input.trim() === "") return;
   if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-  //manually clear debouncing
+  lastTypingEmitRef.current = 0;
+  // Manually clear typing state immediately
   socket?.emit("stopTyping", { receiverId: selectedUser._id });
-  //send stopTyping here else it will show typing for 1.5 sec even after sendig message
   const textToSend = input.trim();
   setInput("");
   setSmartReplies([]);
   await sendMessage({text : textToSend});
  }
+
 
  // Helper: Client-side image compression (drops massive iPhone/Android 12MB photos to ~200KB in 50ms)
  const compressImage = (file) => {
@@ -137,17 +156,43 @@ const ChatContainer = () => {
     setIsLoadingOlder(false);
   };
 
+  // Always reset typing state and notify previous user when switching chats or unmounting
   useEffect(() => {
-    if (!socket || !selectedUser) return;
+    setIsTyping(false);
+    if (receiverTypingTimeoutRef.current) clearTimeout(receiverTypingTimeoutRef.current);
+
+    return () => {
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      if (socket && selectedUser?._id) {
+        socket.emit("stopTyping", { receiverId: selectedUser._id });
+        lastTypingEmitRef.current = 0;
+      }
+    };
+  }, [selectedUser?._id]);
+
+  useEffect(() => {
+    if (!socket || !selectedUser?._id) {
+      setIsTyping(false);
+      return;
+    }
 
     const handleUserTyping = ({ senderId }) => {
-      if (String(senderId) === String(selectedUser._id)) {
+      // Strict guard: ensure senderId exists and matches currently viewed friend
+      if (senderId && selectedUser?._id && String(senderId) === String(selectedUser._id)) {
         setIsTyping(true);
+
+        // Auto-expire after 3 seconds: guarantees typing indicator NEVER lingers
+        // even if sender locks phone, closes tab, or drops packets!
+        if (receiverTypingTimeoutRef.current) clearTimeout(receiverTypingTimeoutRef.current);
+        receiverTypingTimeoutRef.current = setTimeout(() => {
+          setIsTyping(false);
+        }, 3000);
       }
     };
 
     const handleUserStopTyping = ({ senderId }) => {
-      if (String(senderId) === String(selectedUser._id)) {
+      if (senderId && selectedUser?._id && String(senderId) === String(selectedUser._id)) {
+        if (receiverTypingTimeoutRef.current) clearTimeout(receiverTypingTimeoutRef.current);
         setIsTyping(false);
       }
     };
@@ -156,10 +201,11 @@ const ChatContainer = () => {
     socket.on("stopTyping", handleUserStopTyping);
 
     return () => {
+      if (receiverTypingTimeoutRef.current) clearTimeout(receiverTypingTimeoutRef.current);
       socket.off("typing", handleUserTyping);
       socket.off("stopTyping", handleUserStopTyping);
     };
-  }, [socket, selectedUser]);
+  }, [socket, selectedUser?._id]);
 
   useEffect(()=>{
   if(scrollEnd.current){
@@ -375,7 +421,7 @@ const ChatContainer = () => {
     <div className='flex items-center gap-2 p-3 bg-slate-900'>
       <div className='flex-1 flex items-center bg-[#18181b] px-4 rounded-full focus-within:ring-1 focus-within:ring-blue-500 transition-shadow'>  
         
-        <input onChange={handleInputChange} value={input}
+        <input onChange={handleInputChange} onBlur={handleInputBlur} value={input}
         onKeyDown={(e) => e.key === "Enter" ? handleSendMessage(e) : null}
         type="text" placeholder='Type a message...'
           className='flex-1 text-sm py-2.5 px-1 border-none bg-transparent text-slate-100 
