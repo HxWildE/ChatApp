@@ -12,8 +12,11 @@ const Sidebar = () => {
     setSelectedUser, 
     unseenMessages, 
     setUnseenMessages,
-    incomingRequestsCount 
+    incomingRequestsCount,
+    aiSuggestionsEnabled,
+    toggleAiSuggestions
   } = useContext(ChatContext)
+
 
   const { logout, onlineUsers } = useContext(AuthContext)
 
@@ -138,7 +141,24 @@ const Sidebar = () => {
                       <span className='font-medium'>Edit Profile</span>
                     </button>
 
+                    <button
+                      type='button'
+                      onClick={() => toggleAiSuggestions()}
+
+                      className='w-full text-left cursor-pointer text-xs text-slate-200 hover:text-white py-2 px-2.5 rounded-lg hover:bg-white/10 transition flex items-center justify-between group/item'
+                      title='Toggle AI Smart Replies'
+                    >
+                      <div className='flex items-center gap-2'>
+                        <span className='text-sm select-none'>✨</span>
+                        <span className='font-medium'>AI Suggestions</span>
+                      </div>
+                      <div className={`w-7 h-4 flex items-center rounded-full p-0.5 transition-colors duration-200 ${aiSuggestionsEnabled ? 'bg-sky-500 justify-end' : 'bg-slate-700 justify-start'}`}>
+                        <div className='w-3 h-3 rounded-full bg-white shadow-sm'></div>
+                      </div>
+                    </button>
+
                     <hr className='my-1.5 border-t border-slate-800' />
+
 
                     <button
                       type='button'

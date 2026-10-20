@@ -12,8 +12,30 @@ export const ChatProvider = ({ children }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [unseenMessages, setunseenMessages] = useState({});
     const [incomingRequestsCount, setIncomingRequestsCount] = useState(0);
+    const [aiSuggestionsEnabled, setAiSuggestionsEnabled] = useState(() => {
+        try {
+            const saved = localStorage.getItem('nexus_ai_smart_replies_enabled');
+            return saved !== null ? JSON.parse(saved) : true;
+        } catch {
+            return true;
+        }
+    });
+
+    const toggleAiSuggestions = () => {
+        setAiSuggestionsEnabled(prev => {
+            const nextVal = !prev;
+            try {
+                localStorage.setItem('nexus_ai_smart_replies_enabled', JSON.stringify(nextVal));
+            } catch (e) {
+                console.error("Failed to save to localStorage", e);
+            }
+            toast.success(nextVal ? "✨ AI Smart Replies enabled" : "AI Smart Replies disabled");
+            return nextVal;
+        });
+    };
 
     const { socket, axios, authUser } = useContext(AuthContext);
+
 
     const getUsers = async () => {
         try {
@@ -165,8 +187,11 @@ export const ChatProvider = ({ children }) => {
         setUnseenMessages: setunseenMessages,
         incomingRequestsCount,
         setIncomingRequestsCount,
-        fetchRequestsCount
+        fetchRequestsCount,
+        aiSuggestionsEnabled,
+        toggleAiSuggestions
     };
+
 
     return (
         <ChatContext.Provider value={value}>

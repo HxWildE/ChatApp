@@ -11,7 +11,8 @@ import toast from 'react-hot-toast';
 const ChatContainer = () => {
  
   const { messages , selectedUser, setSelectedUser , 
-    sendMessage , getMessages} = useContext(ChatContext)
+    sendMessage , getMessages, aiSuggestionsEnabled} = useContext(ChatContext)
+
 
   const {authUser , onlineUsers, socket, axios} = useContext(AuthContext)
   const navigate = useNavigate();
@@ -215,7 +216,7 @@ const ChatContainer = () => {
 
   // Fetch AI Smart Replies whenever messages change or a friend is selected
   useEffect(() => {
-    if (!selectedUser) {
+    if (!selectedUser || !aiSuggestionsEnabled) {
       setSmartReplies([]);
       return;
     }
@@ -258,7 +259,8 @@ const ChatContainer = () => {
     return () => {
       controller.abort();
     };
-  }, [selectedUser?._id, messages.length]);
+  }, [selectedUser?._id, messages.length, aiSuggestionsEnabled]);
+
  
   const isOnline = onlineUsers.includes(String(selectedUser?._id));
 
@@ -385,7 +387,8 @@ const ChatContainer = () => {
     </div>
 
     {/* Smart Reply Suggestions Bar */}
-    {smartReplies.length > 0 && (
+    {aiSuggestionsEnabled && smartReplies.length > 0 && (
+
       <div className="px-4 py-2 bg-slate-900/95 backdrop-blur-md border-t border-slate-800/80 flex items-center gap-2 overflow-x-auto no-scrollbar animate-in fade-in slide-in-from-bottom-2 duration-200">
         <div className="flex items-center gap-1.5 text-xs font-semibold text-sky-400 shrink-0 select-none mr-1">
           <span className="text-sm">✨</span>
