@@ -24,6 +24,7 @@
     <img src="https://img.shields.io/badge/Express-5-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js" />
     <img src="https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
     <img src="https://img.shields.io/badge/Socket.io-4.8-010101?style=for-the-badge&logo=socket.io&logoColor=white" alt="Socket.IO" />
+    <img src="https://img.shields.io/badge/Google_Gemini-3.5_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini" />
     <img src="https://img.shields.io/badge/Zod-Schema_Validation-3E67B1?style=for-the-badge&logo=zod&logoColor=white" alt="Zod" />
     <img src="https://img.shields.io/badge/Cloudinary-Media_Uploads-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white" alt="Cloudinary" />
   </p>
@@ -43,9 +44,9 @@ NEXUS provides a seamless communication experience built on a responsive dark UI
 | [Users & Online Status Sidebar]    | [Active Chat Room Header]                   |
 | 🟢 Alice (Online - Typing...)     | 💬 Alice (Online)                            |
 | ⚪ Bob (Offline)                   |                                              |
-|                                    | 📥 Alice: Hey! Is the Socket.io ready?       |
-|                                    | 📤 You: Yes! Connected with low latency ⚡   |
+|                                    | 📥 Alice: Hey! Are you free for coffee today?|
 |                                    |                                              |
+|                                    | ✨ [Sure, what time?] [Sounds good!] [Busy]  |
 |                                    | [ 📎 Attach Image ] [ Type message... ] [🚀] |
 +------------------------------------+----------------------------------------------+
 ```
@@ -54,14 +55,18 @@ NEXUS provides a seamless communication experience built on a responsive dark UI
 
 ## ✨ Features
 
+- 🤖 **Contextual AI Smart Replies**: Powered by **Google Gemini 3.5 Flash Lite** (`@google/genai`) with sub-400ms inference. Provides 3 intelligent, tone-varied suggestions (affirmative, inquisitive, casual) with an automatic **Multi-Model Fallback Cascade** (`gemini-3.5-flash-lite` ➔ `gemini-3.5-flash` ➔ `gemini-3.8-flash`) and strict JSON schema decoding.
+- ⚙️ **AI Suggestions Settings Toggle**: Integrated toggle switch in the menu dropdown backed by persistent `localStorage` (`nexus_ai_smart_replies_enabled`), ensuring 0 API calls and 0 tokens consumed when unneeded.
 - ⚡ **Real-Time Messaging**: Built on **Socket.IO** for instant, bi-directional message delivery with zero page refreshes.
-- 🟢 **Online Presence & Typing Indicators**: Live user status updates and real-time notification when a peer is composing a message.
+- 🟢 **Resilient Typing Indicators**: WhatsApp-grade typing status with a 3-second receiver-side auto-expiry timer, input `onBlur` & chat-switch cleanups, and background tab throttling protection.
+- ✓✓ **Delivery & Read Acknowledgment Ticks**: Multi-state message lifecycle (`✓` sent, `✓✓` gray delivered, `✓✓` sky-blue seen) powered by real-time Socket.IO bidirectional ACK loops.
 - 📜 **Cursor-Based Pagination**: Highly optimized, O(1) performance message history loading, immune to real-time data shifting.
 - 🎨 **Premium "Big Tech" UI**: A hyper-polished, responsive dark mode aesthetic featuring sleek minimalist chat bubbles, edge-to-edge sidebar lists, and fluid transitions.
 - 🔤 **Dynamic Font Switcher**: Built-in settings module to toggle instantly between premium UI fonts (Inter, Roboto, Poppins, System) via a global Theme Context.
-- 🔐 **Secure Authentication & Rate Limiting**: User sign-up/login with **bcryptjs**, **JWT** sessions, and robust backend protection using **express-rate-limit** and dynamic CORS.
+- 🔐 **Secure Authentication & Rate Limiting**: User sign-up/login with **bcryptjs**, **JWT** sessions in `HttpOnly` cookies, and robust backend protection using **express-rate-limit** (including dedicated AI rate limiters) and dynamic CORS.
 - 🛡️ **Strict Schema Validation**: End-to-end payload validation powered by **Zod** across authentication and messaging endpoints.
-- 🖼️ **Cloud Media Attachments**: Profile pictures and media uploads handled seamlessly with **Cloudinary**.
+- 🖼️ **Cloud Media Attachments & Canvas Compression**: Profile pictures and media uploads handled seamlessly with **Cloudinary** (including dynamic HEIC auto-transcoding and client-side HTML5 canvas compression).
+
 
 ---
 
@@ -77,6 +82,7 @@ NEXUS provides a seamless communication experience built on a responsive dark UI
 | **Real-Time Engine** | **Socket.IO** | Bi-directional event-driven websocket protocol |
 | **Database** | **MongoDB + Mongoose** | NoSQL Document database for persistence |
 | **Validation** | **Zod** | Type-safe runtime schema validation |
+| **AI & LLM Engine** | **Google Gemini 3.5 Flash Lite (`@google/genai`)** | Contextual real-time smart replies with multi-model fallback cascade |
 | **Media Cloud** | **Cloudinary** | Image processing and cloud CDN storage |
 | **Security** | **JWT + Bcrypt.js** | Stateless authentication and token verification |
 
@@ -89,6 +95,7 @@ sequenceDiagram
     autonumber
     actor Client as React 19 Client
     participant Express as Express.js API
+    participant Gemini as Google Gemini API
     participant Socket as Socket.IO Server
     participant DB as MongoDB Database
     participant Cloud as Cloudinary Storage
@@ -106,13 +113,20 @@ sequenceDiagram
     Express->>DB: Update Profile Picture URL
     Express-->>Client: Updated User Profile
 
+    %% Contextual AI Smart Replies Flow
+    Client->>Express: GET /api/ai/smart-replies/:friendId (JWT Session)
+    Express->>DB: Query Last 5 Messages Context
+    Express->>Gemini: generateContent(systemInstruction, chatTranscript)
+    Gemini-->>Express: Strict JSON Array ["Reply 1", "Reply 2", "Reply 3"]
+    Express-->>Client: Return { suggestions: [...] } (Rendered as chips)
+
     %% Real-time Socket Communication
     Client->>Socket: Connect (Secure JWT Cookie)
     Socket->>Socket: Map socket.id -> userId
     Socket-->>Client: Broadcast "getOnlineUsers" Event
 
     Client->>Socket: Emit "typing" ({ receiverId })
-    Socket-->>Client: Forward "typing" to Receiver
+    Socket-->>Client: Forward "typing" to Receiver (3s Auto-Expiry)
 
     Client->>Express: POST /api/messages/send/:id (Message Content)
     Express->>DB: Store Message Document
@@ -128,8 +142,8 @@ sequenceDiagram
 nexus/
 ├── client/                     # React 19 + Vite Frontend Application
 │   ├── src/
-│   │   ├── components/         # Chat Sidebar, Message View, Navbar & Modals
-│   │   ├── context/            # AuthContext, ChatContext, SocketContext
+│   │   ├── components/         # Chat Sidebar, Message View, Smart Reply Chips, Navbar & Modals
+│   │   ├── context/            # AuthContext, ChatContext (AI suggestions toggle state), SocketContext
 │   │   ├── pages/              # Home, Login, Signup, Profile pages
 │   │   ├── lib/                # Axios instance & socket setup
 │   │   └── App.jsx             # Main router root
@@ -137,20 +151,22 @@ nexus/
 │   └── vite.config.js
 │
 ├── server/                     # Node.js + Express + Socket.IO Server
-│   ├── controllers/            # Auth & Message request handlers
+│   ├── controllers/            # Auth, Message & AI request handlers
 │   ├── lib/                    # DB connection, Cloudinary & Token helpers
-│   ├── middleware/             # Auth middleware & Zod validation
+│   ├── middleware/             # Auth middleware, AI rate limiters & Zod validation
 │   ├── models/                 # Mongoose User & Message schemas
-│   ├── routes/                 # Express API router definitions
+│   ├── routes/                 # Express API router definitions (auth, messages, ai)
+│   ├── services/               # Google Gemini aiService.js (Cascade fallback & JSON schema)
 │   ├── socket/                 # Socket.io connection & auth logic
 │   ├── server.js               # Express app initialization
 │   └── package.json
 │
+├── docs/                       # Daily progress logs, AI architecture trace & AWS Cloud Masterclass
+│   └── 05_INFRASTRUCTURE_AND_DEPLOYMENT/AWS_MASTERCLASS/ # 10-module Deep Dive
+│
 ├── PROJECTREAD/                # Massive 17-part Architectural Documentation
 │
-├── interviewFinAL/             # ~230+ Deep Dive Technical Interview Questions
-│
-└── docs/                       # Daily progress logs and legacy docs
+└── interviewFinAL/             # ~230+ Deep Dive Technical Interview Questions
 ```
 
 ---
@@ -191,6 +207,7 @@ JWT_SECRET=your_super_secret_jwt_key_here
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+GEMINI_API_KEY=your_google_gemini_api_key_here
 ```
 
 #### 3. Configure Frontend (`/client`)
@@ -240,6 +257,12 @@ npm run dev
 | `GET` | `/api/messages/users` | Fetch sidebar users for conversation list | 🟢 |
 | `GET` | `/api/messages/:id` | Fetch conversation history with user `:id` | 🟢 |
 | `POST` | `/api/messages/send/:id` | Send text/image message to user `:id` | 🟢 |
+
+### AI Endpoints (`/api/ai`)
+
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| `GET` | `/api/ai/smart-replies/:friendId` | Generates 3 contextual smart replies via Gemini cascade (Rate limit: 30 req/min) | 🟢 |
 
 ---
 
